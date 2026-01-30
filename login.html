@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZORIN | تسجيل الدخول</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --bg: #ffffff; --text: #000000; --grey: #f5f5f5; --accent: #000; }
+        body { margin: 0; font-family: 'Cairo', sans-serif; background: var(--grey); display: flex; align-items: center; justify-content: center; height: 100vh; }
+        
+        .auth-container { background: #fff; width: 90%; max-width: 400px; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
+        .logo { font-family: 'Syncopate'; font-weight: 700; font-size: 1.8rem; letter-spacing: 3px; text-decoration: none; color: #000; display: block; margin-bottom: 30px; }
+        
+        h2 { margin-bottom: 10px; font-size: 1.5rem; }
+        p { color: #666; font-size: 0.9rem; margin-bottom: 25px; }
+
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-family: 'Cairo'; outline: none; transition: 0.3s; }
+        input:focus { border-color: #000; }
+
+        .btn-black { background: #000; color: #fff; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+        .btn-google { background: #fff; color: #444; border: 1px solid #ddd; padding: 12px; width: 100%; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        .switch-mode { margin-top: 20px; font-size: 0.85rem; color: #888; }
+        .switch-mode span { color: #000; font-weight: bold; cursor: pointer; text-decoration: underline; }
+        
+        .back-home { margin-top: 20px; display: block; color: #888; text-decoration: none; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <a href="index.html" class="logo">ZORIN</a>
+    <h2 id="authTitle">تسجيل الدخول</h2>
+    <p id="authDesc">مرحباً بك مجدداً في متجرنا</p>
+
+    <div id="authForm">
+        <input type="text" id="userName" placeholder="الاسم الكامل" style="display: none;">
+        <input type="email" id="userEmail" placeholder="البريد الإلكتروني">
+        <input type="password" id="userPass" placeholder="كلمة المرور">
+        <button class="btn-black" onclick="handleAuth()" id="submitBtn">دخول</button>
+    </div>
+
+    <button class="btn-google" onclick="loginWithGoogle()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18">
+        الدخول بواسطة جوجل
+    </button>
+
+    <div class="switch-mode">
+        <span id="toggleText" onclick="toggleMode()">ليس لديك حساب؟ أنشئ حساباً الآن</span>
+    </div>
+
+    <a href="index.html" class="back-home"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCInkKv1hByxRZiHbOAfRn9bGbmaAPoZ8A",
+        authDomain: "mystore-842cf.firebaseapp.com",
+        projectId: "mystore-842cf",
+        storageBucket: "mystore-842cf.appspot.com",
+        messagingSenderId: "594163229640",
+        appId: "1:594163229640:web:888670dd4016e8111656fd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    let isLoginMode = true;
+    const adminEmail = "zorin@gmail.com"; // ضع إيميل الأدمن الخاص بك هنا
+
+    // وظيفة التحويل الذكي
+    function redirectUser(user) {
+        if (user.email === adminEmail) {
+            window.location.href = "admin.html"; // لو أدمن يروح لوحة التحكم
+        } else {
+            window.location.href = "index.html"; // لو عميل يروح الرئيسية
+        }
+    }
+
+    // التبديل بين الدخول والإنشاء
+    window.toggleMode = () => {
+        isLoginMode = !isLoginMode;
+        document.getElementById('authTitle').innerText = isLoginMode ? "تسجيل الدخول" : "إنشاء حساب جديد";
+        document.getElementById('authDesc').innerText = isLoginMode ? "مرحباً بك مجدداً في متجرنا" : "انضم إلينا واستمتع بتجربة تسوق فريدة";
+        document.getElementById('submitBtn').innerText = isLoginMode ? "دخول" : "إنشاء الحساب";
+        document.getElementById('userName').style.display = isLoginMode ? "none" : "block";
+        document.getElementById('toggleText').innerText = isLoginMode ? "ليس لديك حساب؟ أنشئ حساباً الآن" : "لديك حساب بالفعل؟ سجل دخولك";
+    };
+
+    // تنفيذ الدخول أو الإنشاء
+    window.handleAuth = async () => {
+        const email = document.getElementById('userEmail').value;
+        const pass = document.getElementById('userPass').value;
+        const name = document.getElementById('userName').value;
+
+        if(!email || !pass) return alert("برجاء ملء جميع الحقول");
+
+        try {
+            if (isLoginMode) {
+                // تسجيل دخول
+                const res = await signInWithEmailAndPassword(auth, email, pass);
+                redirectUser(res.user);
+            } else {
+                // إنشاء حساب
+                const res = await createUserWithEmailAndPassword(auth, email, pass);
+                await updateProfile(res.user, { displayName: name });
+                alert("تم إنشاء الحساب بنجاح");
+                redirectUser(res.user);
+            }
+        } catch (error) {
+            if (error.code === 'auth/email-already-in-use') alert("هذا الإيميل مستخدم بالفعل");
+            else if (error.code === 'auth/wrong-password') alert("كلمة المرور غير صحيحة");
+            else alert("خطأ: " + error.message);
+        }
+    };
+
+    // الدخول بجوجل
+    window.loginWithGoogle = async () => {
+        try {
+            const res = await signInWithPopup(auth, provider);
+            redirectUser(res.user);
+        } catch (error) {
+            alert("فشل الدخول بواسطة جوجل");
+        }
+    };
+</script>
+
+</body>
+</html>
