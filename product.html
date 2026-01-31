@@ -785,7 +785,27 @@
         <button class="btn-outline" style="width:100%; margin-top:10px; border:none;"
             onclick="closeCheckout()">إلغاء</button>
     </div>
+<div id="reviewsSection" style="margin-top: 40px; padding: 20px; border-top: 1px solid #eee;">
+    <h3>تقييمات العملاء ⭐</h3>
+    <div id="reviewsList">
+        <p style="color: #999;">لا توجد تقييمات بعد. كن أول من يقيم المنتج!</p>
+    </div>
 
+    <div id="addReviewBox" style="margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
+        <h4>أضف تقييمك</h4>
+        <select id="rateStar" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <option value="5">⭐⭐⭐⭐⭐ (ممتاز)</option>
+            <option value="4">⭐⭐⭐⭐ (جيد جداً)</option>
+            <option value="3">⭐⭐⭐ (جيد)</option>
+            <option value="2">⭐⭐ (مقبول)</option>
+            <option value="1">⭐ (سيء)</option>
+        </select>
+        <textarea id="rateComm" placeholder="اكتب رأيك في الخامة والمقاس..." rows="3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Cairo';"></textarea>
+        <button onclick="sendReview()" id="btnRev" style="width: 100%; background: #000; color: #fff; padding: 12px; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer; font-weight: bold;">نشر التقييم</button>
+    </div>
+    <div id="addReviewBox" style="display: none; margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
+   </div>
+</div>
     <footer>
         <div class="footer-top">
             <div class="footer-about">
@@ -1017,7 +1037,7 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
         window.addToCart = (showCart = true) => {
             if (!selectedSize) return alert("الرجاء اختيار المقاس");
             const item = {
-                id: product.id,
+                id: productId,
                 name: product.name,
                 price: product.salePrice || product.price,
                 color: selectedColor,
@@ -1031,45 +1051,54 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
         };
 
         window.confirmOrder = async () => {
-            const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
-            const addr = document.getElementById('custAddress').value;
-            if (!name || !phone || !addr) return alert("أكمل البيانات");
+    const name = document.getElementById('custName').value;
+    const phone = document.getElementById('custPhone').value;
+    const addr = document.getElementById('custAddress').value;
+    if (!name || !phone || !addr) return alert("أكمل البيانات");
 
-            let orderItems = tempItem ? [tempItem] : [...cart];
-            if (orderItems.length === 0) return alert("لا توجد منتجات");
+    let orderItems = tempItem ? [tempItem] : [...cart];
+    if (orderItems.length === 0) return alert("لا توجد منتجات");
 
-            const btn = document.getElementById('confirmBtn');
-            btn.innerText = "جاري التأكيد..."; btn.disabled = true;
+    const btn = document.getElementById('confirmBtn');
+    btn.innerText = "جاري التأكيد..."; btn.disabled = true;
 
-            try {
-                await addDoc(collection(db, "orders"), {
-                    customer: { name, phone, address: addr, email: currentUser?.email || "Guest" },
-                    items: orderItems,
-                    total: orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0),
-                    status: "new",
-                    createdAt: new Date()
-                });
+    try {
+        // 1. تسجيل الطلب
+        await addDoc(collection(db, "orders"), {
+            customer: { name, phone, address: addr, email: currentUser?.email || "Guest" },
+            items: orderItems,
+            total: orderItems.reduce((sum, item) => sum + (Number(item.price) * Number(item.qty)), 0),
+            status: "new",
+            createdAt: new Date()
+        });
 
-                // تحديث المخزون
-                for (const item of orderItems) {
-                    const productRef = doc(db, "products", item.id);
-                    const pSnap = await getDoc(productRef);
-                    if (pSnap.exists()) {
-                        const pData = pSnap.data();
-                        const updatedVariants = pData.variants.map(v => {
-                            if (v.color === item.color) v.stock[item.size] = Math.max(0, v.stock[item.size] - item.qty);
-                            return v;
-                        });
-                        await updateDoc(productRef, { variants: updatedVariants });
+        // 2. تحديث المخزون بدقة
+        for (const item of orderItems) {
+            const productRef = doc(db, "products", item.id);
+            const pSnap = await getDoc(productRef);
+            if (pSnap.exists()) {
+                const pData = pSnap.data();
+                const updatedVariants = pData.variants.map(v => {
+                    if (v.color === item.color && v.stock && item.size in v.stock) {
+                        // تحويل القيم لأرقام لمنع خطأ الـ NaN
+                        let currentStock = Number(v.stock[item.size]) || 0;
+                        let orderedQty = Number(item.qty) || 1;
+                        v.stock[item.size] = Math.max(0, currentStock - orderedQty);
                     }
-                }
-                alert("تم استلام طلبك!");
-                localStorage.removeItem('zorin_cart');
-                location.href = "index.html";
-            } catch (error) { alert("خطأ في الطلب"); btn.innerText = "تأكيد الطلب"; btn.disabled = false; }
-        };
-
+                    return v;
+                });
+                await updateDoc(productRef, { variants: updatedVariants });
+            }
+        }
+        alert("تم استلام طلبك!");
+        localStorage.removeItem('zorin_cart');
+        location.href = "index.html";
+    } catch (error) { 
+        console.error(error); 
+        alert("خطأ في الطلب: تأكد من صلاحيات قاعدة البيانات"); 
+        btn.innerText = "تأكيد الطلب"; btn.disabled = false; 
+    }
+};
         // --- [4] وظائف الـ UI (فتح وإغلاق القوائم) ---
         window.toggleSidebar = (id) => {
             document.getElementById(id).classList.add('active');
@@ -1115,7 +1144,7 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
         window.removeItem = (i) => { cart.splice(i, 1); window.updateCart(); };
         window.buyNow = () => {
             if (!selectedSize) return alert("الرجاء اختيار المقاس");
-            tempItem = { id: product.id, name: product.name, price: product.salePrice || product.price, color: selectedColor, size: selectedSize, image: product.image, qty: quantity };
+            tempItem = { id: productId, name: product.name, price: product.salePrice || product.price, color: selectedColor, size: selectedSize, image: product.image, qty: quantity };
             document.getElementById('checkoutModal').style.display = 'block';
             document.getElementById('overlay').classList.add('active');
         };
@@ -1145,6 +1174,127 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
             loadProduct();
             window.updateCart();
         };
+      // دالة إرسال التقييم
+window.sendReview = async () => {
+    const comm = document.getElementById('rateComm').value;
+    const star = document.getElementById('rateStar').value;
+    const btn = document.getElementById('btnRev');
+
+    if (!comm) return alert("اكتب تعليقك الأول");
+    
+    // تأكد إن productId متعرف فوق في الكود عندك
+    if (!productId) return alert("خطأ في معرف المنتج");
+
+    btn.innerText = "جاري النشر...";
+    btn.disabled = true;
+
+    try {
+        await addDoc(collection(db, "reviews"), {
+            productId: productId,
+            userName: currentUser ? (currentUser.displayName || currentUser.email.split('@')[0]) : "عميل مجهول",
+            comment: comm,
+            rating: parseInt(star),
+            createdAt: new Date()
+        });
+        
+        alert("تم إضافة تقييمك بنجاح!");
+        document.getElementById('rateComm').value = "";
+        btn.innerText = "نشر التقييم";
+        btn.disabled = false;
+        loadReviews(); // تحديث القائمة فوراً
+    } catch (e) {
+        console.error(e);
+        alert("لازم تكون مسجل دخول عشان تقيم");
+        btn.innerText = "نشر التقييم";
+        btn.disabled = false;
+    }
+};
+
+// دالة عرض التقييمات
+window.loadReviews = async () => {
+    const list = document.getElementById('reviewsList');
+    try {
+        // الاستعلام البسيط اللي عدلناه عشان الـ Index
+        const q = query(collection(db, "reviews"), where("productId", "==", productId));
+        const snap = await getDocs(q);
+        
+        if (snap.empty) {
+            list.innerHTML = `<p style="color: #999;">لا توجد تقييمات بعد.</p>`;
+            return;
+        }
+
+        let html = "";
+        snap.forEach(d => {
+            const r = d.data();
+            html += `
+                <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <b style="font-size:14px;">${r.userName}</b>
+                        <span style="color:#ffc107;">${'⭐'.repeat(r.rating)}</span>
+                    </div>
+                    <p style="margin:5px 0; font-size:13px; color:#555;">${r.comment}</p>
+                    <small style="color:#bbb; font-size:10px;">${r.createdAt?.toDate().toLocaleDateString() || ''}</small>
+                </div>`;
+        });
+        list.innerHTML = html;
+    } catch (e) {
+        console.error("Error loading reviews:", e);
+    }
+};
+
+// تشغيل جلب التقييمات عند فتح الصفحة
+setTimeout(loadReviews, 2000);
+window.sendReview = async () => {
+    const comm = document.getElementById('rateComm').value;
+    const star = document.getElementById('rateStar').value;
+    const btn = document.getElementById('btnRev');
+
+    // تأكيد إضافي لجلب المستخدم الحالي
+    const user = auth.currentUser; 
+
+    if (!user) {
+        alert("خطأ: الفايربيز مش شايف تسجيل دخولك. جرب تعمل ريفريش أو سجل دخول تاني.");
+        return;
+    }
+
+    if (!comm) return alert("اكتب تعليقك الأول");
+
+    btn.innerText = "جاري النشر...";
+    btn.disabled = true;
+
+    try {
+        await addDoc(collection(db, "reviews"), {
+            productId: productId,
+            userName: user.displayName || user.email.split('@')[0],
+            userEmail: user.email, // مفيد عشانك أنت كأدمن
+            comment: comm,
+            rating: parseInt(star),
+            createdAt: new Date()
+        });
+        
+        alert("تم إضافة تقييمك بنجاح!");
+        document.getElementById('rateComm').value = "";
+        btn.innerText = "نشر التقييم";
+        btn.disabled = false;
+        loadReviews(); 
+    } catch (e) {
+        console.error(e);
+        alert("حدث خطأ في الصلاحيات. تأكد من الـ Rules");
+        btn.innerText = "نشر التقييم";
+        btn.disabled = false;
+    }
+};
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if (user) {
+        // أول ما يتأكد إن فيه مستخدم، نظهر الصندوق فوراً
+        document.getElementById('addReviewBox').style.display = 'block';
+    } else {
+        // لو مش مسجل، نخفيه (أو نظهر رسالة: سجل دخول لتتمكن من التقييم)
+        document.getElementById('addReviewBox').style.display = 'none';
+    }
+});
+
     </script>
 </body>
 
