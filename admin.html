@@ -166,19 +166,20 @@
     const auth = getAuth(app);
     const ADMIN_EMAIL = "zorinstore2026@gmail.com";
 
-   // التحقق من الأدمن بشكل ذكي
+ // في ملف admin.html - سطر 149 تقريباً
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // لو المستخدم مسجل، نتحقق من الإيميل
+        // لو المستخدم موجود، نتحقق من الإيميل
         if (user.email === ADMIN_EMAIL) {
-            console.log("مرحباً بك أيها الأدمن");
-            // هنا الصفحة هتفضل فاتحة عادي
+            console.log("Welcome Admin");
+            // هنا بنسيبه في الصفحة عادي
+            document.body.style.opacity = "1"; // إظهار الصفحة بعد التأكد
         } else {
-            // لو مسجل بإيميل تاني غير الأدمن
+            // لو مسجل بإيميل زبون عادي
             window.location.href = 'index.html';
         }
     } else {
-        // لو مش مسجل دخول خالص، يروح لصفحة اللوجن
+        // في حالة مفيش مستخدم خالص (بعد ما الفايربيز خلص تحميل)
         window.location.href = 'login.html';
     }
 });
