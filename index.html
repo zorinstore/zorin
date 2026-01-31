@@ -684,6 +684,44 @@
     align-items: center;
     gap: 15px;
 }
+/* حاوية الصور الأساسية */
+.product-images-slider {
+    display: flex;
+    overflow-x: auto; /* السماح بالسحب الأفقي */
+    scroll-snap-type: x mandatory; /* تثبيت الصورة في المنتصف بعد السحب */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* سحب ناعم على الآيفون */
+}
+
+.product-images-slider img {
+    min-width: 100%; /* كل صورة تاخد عرض الشاشة بالكامل */
+    scroll-snap-align: center;
+    object-fit: contain;
+    height: 400px;
+}
+
+/* إخفاء شريط التمرير البشع */
+.product-images-slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* تعديل الأسهم لتظهر فوق الصور */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+    display: flex; /* ستظهر تلقائياً */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
   </style>
 </head>
 
@@ -701,7 +739,12 @@
     </div>
 
     <div id="overlay" class="overlay" onclick="closeAllSidebars()"></div>
-
+<div style="position: relative;">
+    <div class="product-images-slider" id="mainImageContainer">
+        </div>
+    <button class="slider-btn prev-btn" onclick="moveSlider(-1)"><i class="fas fa-chevron-left"></i></button>
+    <button class="slider-btn next-btn" onclick="moveSlider(1)"><i class="fas fa-chevron-right"></i></button>
+</div>
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-header">
             <h3>عربة التسوق</h3>
@@ -1193,32 +1236,19 @@ window.toggleCart = (show) => {
     duration: 1000, // مدة الحركة (ثانية واحدة)
     once: true,     // الحركة تحصل مرة واحدة وأنت نازل بس
   });
-  // حط دي في آخر ملف index.html قبل قفلة الـ body مباشرة
+  // داخل دالة loadProduct بعد الحصول على pData
+const slider = document.getElementById('mainImageContainer');
+slider.innerHTML = pData.images.map(img => `<img src="${img}" alt="product">`).join('');
 
-    window.changeImage = (event, productId, images, direction) => {
-        event.stopPropagation(); // عشان ما يفتحش صفحة المنتج
-        const imgElement = document.getElementById(`img-${productId}`);
-        if (!imgElement) return;
-
-        // نجيب المسار الحالي للصورة
-        let currentSrc = imgElement.src;
-        
-        // ندور على ترتيب الصورة الحالية في المصفوفة
-        let currentIndex = images.findIndex(img => currentSrc.includes(img));
-        
-        if (currentIndex === -1) currentIndex = 0;
-
-        // نحسب الصورة اللي عليها الدور
-        let nextIndex = (currentIndex + direction + images.length) % images.length;
-        
-        // تغيير الصورة مع تأثير خفيف
-        imgElement.style.opacity = '0.6';
-        imgElement.src = images[nextIndex];
-        setTimeout(() => {
-            imgElement.src = images[nextIndex];
-            imgElement.style.opacity = '1';
-        }, 100);
-    };
+// دالة تحريك الأسهم
+window.moveSlider = (direction) => {
+    const slider = document.getElementById('mainImageContainer');
+    const scrollAmount = slider.clientWidth; // عرض الصورة الواحدة
+    slider.scrollBy({
+        left: direction * scrollAmount,
+        behavior: 'smooth'
+    });
+};
 </script>
 </body>
 
