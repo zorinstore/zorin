@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 
 <head>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZORIN STORE | HOME</title>
@@ -9,6 +10,17 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+.img-wrapper { position: relative; width: 100%; height: 400px; overflow: hidden; }
+.img-nav-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.9); border: none; 
+    width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10; opacity: 0; transition: 0.3s;
+}
+.p-card:hover .img-nav-btn { opacity: 1; } /* الأسهم تظهر عند لمس الكارت */
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
         :root {
             --bg: #ffffff;
             --text: #000;
@@ -625,6 +637,15 @@
 .shake-it {
     animation: shakeCart 0.5s ease-in-out;
 }
+.product-card { position: relative; overflow: hidden; }
+.img-container { position: relative; width: 100%; height: 250px; }
+.img-container img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s; }
+.img-nav { 
+    position: absolute; top: 50%; width: 100%; display: flex; 
+    justify-content: space-between; transform: translateY(-50%); opacity: 0; transition: 0.3s;
+}
+.product-card:hover .img-nav { opacity: 1; }
+.nav-btn { background: rgba(255,255,255,0.7); border: none; cursor: pointer; padding: 5px 8px; border-radius: 50%; }
    </style>
 </head>
 
@@ -826,19 +847,20 @@
     </footer>
 
  <script type="module">
+    // 1. استيراد المكتبات المطلوبة من النسخة الجديدة
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, onSnapshot, query, orderBy, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+    // 2. بيانات مشروع ZORIN STORE 2026 الجديد
     const firebaseConfig = {
-        apiKey: "AIzaSyCInkKv1hByxRZiHbOAfRn9bGbmaAPoZ8A",
-        authDomain: "mystore-842cf.firebaseapp.com",
-        projectId: "mystore-842cf",
-        storageBucket: "mystore-842cf.appspot.com",
-        messagingSenderId: "594163229640",
-        appId: "1:594163229640:web:888670dd4016e8111656fd"
+        apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
+        authDomain: "zorin-store-2026.firebaseapp.com",
+        projectId: "zorin-store-2026",
+        storageBucket: "zorin-store-2026.firebasestorage.app",
+        messagingSenderId: "272032162345",
+        appId: "1:272032162345:web:b09eab937b053373ad7238"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
@@ -954,23 +976,25 @@ window.toggleCart = (show) => {
         }
     };
 
-    // --- مراقبة حالة المستخدم (كودك الأصلي) ---
-    onAuthStateChanged(auth, async (user) => {
-        currentUser = user;
-        const navName = document.getElementById('navUserName');
-        if (user) {
-            const name = user.displayName || user.email.split('@')[0];
-            navName.innerText = name;
-            const welcomeName = document.getElementById('welcomeName');
-            const emailTxt = document.getElementById('userEmailTxt');
-            if(welcomeName) welcomeName.innerText = "Hi, " + name;
-            if(emailTxt) emailTxt.innerText = user.email;
-            if (user.email === "zorin@gmail.com") location.href = "admin.html";
-            loadUserOrders(user.email);
-        } else {
-            if(navName) navName.innerText = "Login";
-        }
-    });
+   onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    const navName = document.getElementById('navUserName');
+    if (user) {
+        // تحديث واجهة المستخدم
+        const name = user.displayName || user.email.split('@')[0];
+        if(navName) navName.innerText = name;
+        
+        // --- الحل هنا: التحويل الذكي لمنع الرسترة ---
+        const isAdmin = user.email === "zorinstore2026@gmail.com";
+        const isCurrentlyOnIndex = window.location.pathname.includes("index.html") || window.location.pathname === "/";
+
+    
+        
+        loadUserOrders(user.email);
+    } else {
+        if(navName) navName.innerText = "Login";
+    }
+});
 
     // --- وظيفة جلب الطلبات (كودك الأصلي) ---
     async function loadUserOrders(userEmail) {
@@ -1029,29 +1053,46 @@ window.toggleCart = (show) => {
         if (confirm("Logout from ZORIN?")) signOut(auth).then(() => location.reload());
     };
 
-    function renderProducts(snap) {
-        const display = document.getElementById('productsDisplay');
-        if(!display) return;
-        display.innerHTML = "";
-        snap.forEach(doc => {
-            const p = doc.data();
-            const pid = doc.id;
-            const hasSale = p.salePrice && Number(p.salePrice) < Number(p.price);
-            display.innerHTML += `
-                <div class="p-card" onclick="location.href='product.html?id=${pid}'">
-                    ${hasSale ? '<span class="sale-badge">SALE</span>' : ''}
-                    <img src="${p.image}" class="p-img" loading="lazy">
-                    <div class="p-info">
-                        <div style="font-weight:bold; margin-bottom:5px;">${p.name}</div>
-                        <div class="product-price">
-                            ${hasSale ? `<span class="old-price">${p.price} EGP</span>` : ''}
-                            <span class="${hasSale ? 'sale-price' : 'normal-price'}">${p.salePrice || p.price} EGP</span>
-                        </div>
-                    </div>
-                </div>`;
-        });
-    }
+ function renderProducts(snap) {
+    const display = document.getElementById('productsDisplay');
+    if(!display) return;
+    display.innerHTML = "";
+    
+    snap.forEach(doc => {
+        const p = doc.data();
+        const pid = doc.id;
+        const hasSale = p.salePrice && Number(p.salePrice) < Number(p.price);
+        const images = (p.allImages && p.allImages.length > 0) ? p.allImages : [p.image];
+        const imagesJson = JSON.stringify(images).replace(/"/g, '&quot;');
 
+        display.innerHTML += `
+            <div class="p-card" data-aos="fade-up" style="position:relative;"> 
+                ${hasSale ? '<span class="sale-badge">SALE</span>' : ''}
+                <div class="img-wrapper">
+                    <img src="${images[0]}" class="p-img" id="img-${pid}" onclick="location.href='product.html?id=${pid}'">
+                    
+                    ${images.length > 1 ? `
+                        <button class="img-nav-btn prev-btn" onclick="changeImage(event, '${pid}', ${imagesJson}, -1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="img-nav-btn next-btn" onclick="changeImage(event, '${pid}', ${imagesJson}, 1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    ` : ''}
+                </div>
+                <div class="p-info" onclick="location.href='product.html?id=${pid}'">
+                    <div style="font-weight:bold; margin-bottom:5px;">${p.name}</div>
+                    <div class="product-price">
+                        ${hasSale ? `<span class="old-price">${p.price} EGP</span>` : ''}
+                        <span class="${hasSale ? 'sale-price' : 'normal-price'}">${p.salePrice || p.price} EGP</span>
+                    </div>
+                </div>
+            </div>`;
+    });
+    // سطر مهم لتشغيل الأنيميشن بعد تحميل الصور
+    if(window.AOS) AOS.refresh(); 
+}
+  
     window.filterCat = (cat, btn) => {
         if (btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -1084,14 +1125,51 @@ window.toggleCart = (show) => {
 
     // التشغيل المبدئي
     window.onload = () => {
-        const preloader = document.getElementById('preloader');
-        setTimeout(() => { if(preloader) preloader.classList.add('loaded'); }, 2000); 
+    const preloader = document.getElementById('preloader');
+    setTimeout(() => { if(preloader) preloader.classList.add('loaded'); }, 2000); 
 
-        if(localStorage.getItem('zorin_theme') === 'dark') document.body.classList.add('dark-mode');
+    // تشغيل الأنيميشن
+    AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 100
+    });
+
+    window.filterCat('all');
+    window.updateCartUI();
+};
+</script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 1000, // مدة الحركة (ثانية واحدة)
+    once: true,     // الحركة تحصل مرة واحدة وأنت نازل بس
+  });
+  // حط دي في آخر ملف index.html قبل قفلة الـ body مباشرة
+
+    window.changeImage = (event, productId, images, direction) => {
+        event.stopPropagation(); // عشان ما يفتحش صفحة المنتج
+        const imgElement = document.getElementById(`img-${productId}`);
+        if (!imgElement) return;
+
+        // نجيب المسار الحالي للصورة
+        let currentSrc = imgElement.src;
         
-        // تحميل المنتجات الافتراضية
-        window.filterCat('all');
-        window.updateCartUI();
+        // ندور على ترتيب الصورة الحالية في المصفوفة
+        let currentIndex = images.findIndex(img => currentSrc.includes(img));
+        
+        if (currentIndex === -1) currentIndex = 0;
+
+        // نحسب الصورة اللي عليها الدور
+        let nextIndex = (currentIndex + direction + images.length) % images.length;
+        
+        // تغيير الصورة مع تأثير خفيف
+        imgElement.style.opacity = '0.6';
+        imgElement.src = images[nextIndex];
+        setTimeout(() => {
+            imgElement.src = images[nextIndex];
+            imgElement.style.opacity = '1';
+        }, 100);
     };
 </script>
 </body>
