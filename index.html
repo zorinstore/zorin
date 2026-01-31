@@ -1054,38 +1054,33 @@ window.toggleCart = (show) => {
         }
     };
 
-   onAuthStateChanged(auth, async (user) => {
+  onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     const navName = document.getElementById('navUserName');
+    
     if (user) {
-        // تحديث واجهة المستخدم
+        // 1. التحقق من هوية الأدمن (أهم خطوة)
+        if (user.email === "zorinstore2026@gmail.com") {
+            // لو أنت الأدمن وفاتح الصفحة الرئيسية، يبعتك فوراً للأدمن
+            window.location.href = 'admin.html';
+            return; // نوقف التنفيذ هنا عشان ميكملش باقي الكود
+        }
+
+        // 2. تحديث واجهة المستخدم للزبون العادي
         const name = user.displayName || user.email.split('@')[0];
         if(navName) navName.innerText = name;
         
-        // --- الحل هنا: التحويل الذكي لمنع الرسترة ---
-        const isAdmin = user.email === "zorinstore2026@gmail.com";
-        const isCurrentlyOnIndex = window.location.pathname.includes("index.html") || window.location.pathname === "/";
+        // لو عندك عناصر الترحيب في الـ Sidebar
+        const welcomeName = document.getElementById('welcomeName');
+        const userEmailTxt = document.getElementById('userEmailTxt');
+        if(welcomeName) welcomeName.innerText = "Hi, " + name;
+        if(userEmailTxt) userEmailTxt.innerText = user.email;
 
-    
-        
         loadUserOrders(user.email);
     } else {
         if(navName) navName.innerText = "Login";
     }
-});onAuthStateChanged(auth, async (user) => {
-        currentUser = user;
-        const navName = document.getElementById('navUserName');
-        if (user) {
-            const name = user.displayName || user.email.split('@')[0];
-            navName.innerText = name;
-            document.getElementById('welcomeName').innerText = "Hi, " + name;
-            document.getElementById('userEmailTxt').innerText = user.email;
-            loadUserOrders(user.email);
-        } else {
-            navName.innerText = "Login";
-        }
-    });
-
+});
 
     // --- وظيفة جلب الطلبات (كودك الأصلي) ---
     async function loadUserOrders(userEmail) {
