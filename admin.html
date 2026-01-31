@@ -166,10 +166,22 @@
     const auth = getAuth(app);
     const ADMIN_EMAIL = "zorinstore2026@gmail.com";
 
-    onAuthStateChanged(auth, (user) => {
-        if (!user) { window.location.href = 'login.html'; }
-        else if (user.email !== ADMIN_EMAIL) { window.location.href = 'index.html'; }
-    });
+   // التحقق من الأدمن بشكل ذكي
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // لو المستخدم مسجل، نتحقق من الإيميل
+        if (user.email === ADMIN_EMAIL) {
+            console.log("مرحباً بك أيها الأدمن");
+            // هنا الصفحة هتفضل فاتحة عادي
+        } else {
+            // لو مسجل بإيميل تاني غير الأدمن
+            window.location.href = 'index.html';
+        }
+    } else {
+        // لو مش مسجل دخول خالص، يروح لصفحة اللوجن
+        window.location.href = 'login.html';
+    }
+});
 
     window.logout = () => { signOut(auth).then(() => window.location.href = 'login.html'); };
 
