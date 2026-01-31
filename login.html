@@ -42,11 +42,6 @@
         <button class="btn-black" onclick="handleAuth()" id="submitBtn">دخول</button>
     </div>
 
-    <button class="btn-google" onclick="loginWithGoogle()">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" width="18">
-        الدخول بواسطة جوجل
-    </button>
-
     <div class="switch-mode">
         <span id="toggleText" onclick="toggleMode()">ليس لديك حساب؟ أنشئ حساباً الآن</span>
     </div>
@@ -59,12 +54,12 @@
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyCInkKv1hByxRZiHbOAfRn9bGbmaAPoZ8A",
-        authDomain: "mystore-842cf.firebaseapp.com",
-        projectId: "mystore-842cf",
-        storageBucket: "mystore-842cf.appspot.com",
-        messagingSenderId: "594163229640",
-        appId: "1:594163229640:web:888670dd4016e8111656fd"
+         apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
+        authDomain: "zorin-store-2026.firebaseapp.com",
+        projectId: "zorin-store-2026",
+        storageBucket: "zorin-store-2026.firebasestorage.app",
+        messagingSenderId: "272032162345",
+        appId: "1:272032162345:web:b09eab937b053373ad7238"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -72,7 +67,7 @@
     const provider = new GoogleAuthProvider();
 
     let isLoginMode = true;
-    const adminEmail = "zorin@gmail.com"; // ضع إيميل الأدمن الخاص بك هنا
+    const adminEmail = "zorinstore2026@gmail.com"; // ضع إيميل الأدمن الخاص بك هنا
 
     // وظيفة التحويل الذكي
     function redirectUser(user) {
@@ -120,15 +115,6 @@
         }
     };
 
-    // الدخول بجوجل
-    window.loginWithGoogle = async () => {
-        try {
-            const res = await signInWithPopup(auth, provider);
-            redirectUser(res.user);
-        } catch (error) {
-            alert("فشل الدخول بواسطة جوجل");
-        }
-    };
 </script>
 
 </body>
