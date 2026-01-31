@@ -108,7 +108,7 @@
             </div>
 
             <div id="variantList"></div>
-            <textarea id="pDesc" rows="3" placeholder="وصف المنتج، الخامة..." style="margin-top:15px;"></textarea>
+            <textarea id="productDescription" rows="3" placeholder="وصف المنتج، الخامة..." style="margin-top:15px;"></textarea>
             
             <label style="font-size: 13px; font-weight: bold; margin-bottom: 10px; display: block;">صور المنتج (حتى 6 صور):</label>
             <div class="photo-grid">
@@ -198,12 +198,17 @@
             </div>`).join('');
     }
 
-    window.save = async () => {
-        const btn = document.getElementById('saveBtn');
-        const pName = document.getElementById('pName').value;
-        const pPrice = document.getElementById('pPrice').value;
-        if(!pName || !pPrice || variants.length === 0) return alert("أكمل بيانات المنتج");
-        btn.innerText = "جاري الرفع..."; btn.disabled = true;
+  window.save = async () => {
+    const btn = document.getElementById('saveBtn');
+    const pName = document.getElementById('pName').value;
+    const pPrice = document.getElementById('pPrice').value;
+    const pDescription = document.getElementById('productDescription').value; // جلب الوصف
+
+    if(!pName || !pPrice || variants.length === 0) return alert("أكمل بيانات المنتج");
+    
+    btn.innerText = "جاري الرفع..."; btn.disabled = true;
+    
+    try {
         const urls = [];
         for(let i=1; i<=6; i++){
             const f = document.getElementById('f'+i).files[0];
@@ -213,14 +218,31 @@
                 const d = await r.json(); urls.push(d.secure_url);
             }
         }
+
         const selectedCategories = [];
         document.querySelectorAll('input[name="categories"]:checked').forEach(cb => selectedCategories.push(cb.value));
+
+        // الرفع لمرة واحدة فقط وببيانات كاملة
         await addDoc(collection(db, "products"), {
-            name: pName, price: Number(pPrice), salePrice: Number(pPrice),
-            categories: selectedCategories, variants: variants, image: urls[0], allImages: urls, createdAt: new Date()
+            name: pName, 
+            price: Number(pPrice), 
+            salePrice: Number(pPrice),
+            pDesc: pDescription, // الحقل ده هو اللي هنربطه
+            categories: selectedCategories, 
+            variants: variants, 
+            image: urls[0], 
+            allImages: urls, 
+            createdAt: new Date()
         });
-        alert("تم النشر بنجاح!"); location.reload();
-    };
+
+        alert("تم النشر بنجاح!"); 
+        location.reload();
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الرفع");
+        btn.innerText = "نشر المنتج الآن"; btn.disabled = false;
+    }
+};
 
     onSnapshot(query(collection(db, "products"), orderBy("createdAt", "desc")), (snap) => {
         const inv = document.getElementById('invContainer');
