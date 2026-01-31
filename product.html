@@ -143,6 +143,13 @@
             .sidebar { width: 280px; }
             .container { flex-direction: column; }
         }
+        #navUserName {
+    display: none !important; /* إخفاء كلمة Login أو الاسم من الهيدر */
+}
+
+.nav-icons {
+    gap: 15px;
+}
     </style>
 </head>
 <body>
@@ -191,19 +198,13 @@
             <span class="cart-badge" id="cartCountSidebar">0</span>
         </div>
     </div>
-
-    <div class="side-footer" style="margin-top:auto">
-        <label class="section-label">PREFERENCES</label>
-        <div class="settings-grid">
-            <button class="set-item" onclick="toggleDarkMode()">
-                <i class="fas fa-moon"></i>
-                <span>Dark Mode</span>
-            </button>
-            <button class="set-item" onclick="alert('Coming Soon!')">
-                <i class="fas fa-globe"></i>
-                <span>Language</span>
-            </button>
-        </div>
+ <div class="side-footer" style="margin-top:auto; padding: 20px 0;">
+    <label class="section-label" style="display: block; text-align: center; margin-bottom: 15px; font-size: 10px; letter-spacing: 2px; color: #888;">PREFERENCES</label>
+    <div class="settings-grid" style="display: flex; justify-content: center;">
+        <button class="set-item mode-toggle-btn" onclick="toggleDarkMode()">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
     </div>
 </div>
 
@@ -263,7 +264,8 @@
                 <button class="qty-btn" onclick="changeQty(1)">+</button>
             </div>
         </div>
-
+<div class="product-description" id="productDesc" style="margin: 20px 0; line-height: 1.6; color: var(--text);">
+    </div>
         <div class="actions">
             <button class="btn-black" onclick="addToCart(true)">إضافة إلى العربة</button>
             <button class="btn-outline" onclick="buyNow()">شراء الآن</button>
@@ -344,17 +346,19 @@
 
 
 <script type="module">
+    // 1. استيراد المكتبات المطلوبة من النسخة الجديدة
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, collection, onSnapshot, query, orderBy, where, getDocs, addDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCInkKv1hByxRZiHbOAfRn9bGbmaAPoZ8A",
-        authDomain: "myst6-842cf.firebaseapp.com",
-        projectId: "mystore-842cf",
-        storageBucket: "mystore-842cf.appspot.com",
-        messagingSenderId: "594163229640",
-        appId: "1:594163229640:web:888670dd4016e8111656fd"
+    // 2. بيانات مشروع ZORIN STORE 2026 الجديد
+   const firebaseConfig = {
+        apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
+        authDomain: "zorin-store-2026.firebaseapp.com",
+        projectId: "zorin-store-2026",
+        storageBucket: "zorin-store-2026.firebasestorage.app",
+        messagingSenderId: "272032162345",
+        appId: "1:272032162345:web:b09eab937b053373ad7238"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -425,6 +429,7 @@
             renderProduct();
         }
     }
+    
 
     function renderProduct() {
         document.getElementById('productName').innerText = product.name;
