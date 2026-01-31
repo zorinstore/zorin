@@ -1236,7 +1236,33 @@ window.toggleCart = (show) => {
     duration: 1000, // مدة الحركة (ثانية واحدة)
     once: true,     // الحركة تحصل مرة واحدة وأنت نازل بس
   });
-  // داخل دالة loadProduct بعد الحصول على pData
+  // حط دي في آخر ملف index.html قبل قفلة الـ body مباشرة
+
+    window.changeImage = (event, productId, images, direction) => {
+        event.stopPropagation(); // عشان ما يفتحش صفحة المنتج
+        const imgElement = document.getElementById(`img-${productId}`);
+        if (!imgElement) return;
+
+        // نجيب المسار الحالي للصورة
+        let currentSrc = imgElement.src;
+        
+        // ندور على ترتيب الصورة الحالية في المصفوفة
+        let currentIndex = images.findIndex(img => currentSrc.includes(img));
+        
+        if (currentIndex === -1) currentIndex = 0;
+
+        // نحسب الصورة اللي عليها الدور
+        let nextIndex = (currentIndex + direction + images.length) % images.length;
+        
+        // تغيير الصورة مع تأثير خفيف
+        imgElement.style.opacity = '0.6';
+        imgElement.src = images[nextIndex];
+        setTimeout(() => {
+            imgElement.src = images[nextIndex];
+            imgElement.style.opacity = '1';
+        }, 100);
+    };
+    // داخل دالة loadProduct بعد الحصول على pData
 const slider = document.getElementById('mainImageContainer');
 slider.innerHTML = pData.images.map(img => `<img src="${img}" alt="product">`).join('');
 
