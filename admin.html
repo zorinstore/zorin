@@ -78,6 +78,9 @@
     <div class="nav-link active" onclick="tab('add', this)"><i class="fas fa-plus-circle"></i> إضافة منتج</div>
     <div class="nav-link" onclick="tab('inv', this)"><i class="fas fa-layer-group"></i> المخزن</div>
     <div class="nav-link" onclick="tab('ord', this)"><i class="fas fa-truck"></i> الطلبات</div>
+    <div class="nav-link" onclick="tab('reviewsAdmin', this)">
+    <i class="fas fa-comments"></i> التقييمات
+</div>
     <div class="nav-link" onclick="logout()" style="margin-top: auto; color: #ff4444;"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</div>
 </aside>
 
@@ -129,6 +132,13 @@
         <h3>الطلبات الواردة</h3>
         <div id="ordContainer"></div>
     </section>
+    <section id="reviewsAdmin" class="section">
+    <div class="header-flex">
+        <h2>إدارة تقييمات العملاء ⭐</h2>
+    </div>
+    <div id="adminReviewsList" class="admin-grid">
+        </div>
+</section>
 </main>
 
 <script>
@@ -339,6 +349,60 @@ onAuthStateChanged(auth, (user) => {
     });
 
     window.delOrder = async (id) => { if(confirm("حذف الطلب نهائياً؟")) await deleteDoc(doc(db, "orders", id)); };
+// دالة عرض التقييمات للأدمن (تحديث لحظي)
+function loadReviewsForAdmin() {
+    const container = document.getElementById('adminReviewsList');
+    if (!container) return;
+
+    // بنستخدم db اللي اتعرفت فوق في سطر 143
+    const q = query(collection(db, "reviews"), orderBy("createdAt", "desc")); 
+    
+    onSnapshot(q, (snap) => {
+        container.innerHTML = "";
+        if (snap.empty) {
+            container.innerHTML = "<p style='text-align:center; color:#888;'>لا توجد تقييمات حالياً</p>";
+            return;
+        }
+        snap.forEach(d => {
+            const r = d.data();
+            container.innerHTML += `
+                <div class="glass-card" style="padding:15px; margin-bottom:15px; border-right: 5px solid #ff4757; position:relative;">
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                        <div>
+                            <b style="font-size:16px;">${r.userName}</b>
+                            <div style="color:#ffc107; margin:5px 0;">${'★'.repeat(r.rating)}</div>
+                        </div>
+                        <button onclick="deleteReview('${d.id}')" style="background:#ff4757; color:#fff; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;">
+                            <i class="fas fa-trash"></i> حذف
+                        </button>
+                    </div>
+                    <p style="color:#555; margin:10px 0; font-size:14px;">"${r.comment}"</p>
+                    <small style="color:#bbb; font-size:11px;">المنتج ID: ${r.productId}</small>
+                </div>
+            `;
+        });
+    }, (error) => {
+        console.error("Error fetching reviews: ", error);
+        if(error.message.includes("index")) {
+            container.innerHTML = "<p style='color:red;'>محتاج تفعيل الـ Index من الرابط في الـ Console</p>";
+        }
+    });
+}
+
+// دالة الحذف (ربطها بـ window عشان الـ onclick يشوفها)
+window.deleteReview = async (id) => {
+    if (confirm("هل أنت متأكد من حذف هذا التقييم؟")) {
+        try {
+            await deleteDoc(doc(db, "reviews", id));
+            alert("تم الحذف ✅");
+        } catch (e) {
+            alert("فشل الحذف: تأكد من صلاحيات الأدمن");
+        }
+    }
+};
+
+// تشغيل الدالة داخل الموديول
+loadReviewsForAdmin();
 </script>
 </body>
 </html>
