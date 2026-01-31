@@ -791,20 +791,35 @@
         <p style="color: #999;">لا توجد تقييمات بعد. كن أول من يقيم المنتج!</p>
     </div>
 
-    <div id="addReviewBox" style="margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
-        <h4>أضف تقييمك</h4>
-        <select id="rateStar" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
-            <option value="5">⭐⭐⭐⭐⭐ (ممتاز)</option>
-            <option value="4">⭐⭐⭐⭐ (جيد جداً)</option>
-            <option value="3">⭐⭐⭐ (جيد)</option>
-            <option value="2">⭐⭐ (مقبول)</option>
-            <option value="1">⭐ (سيء)</option>
-        </select>
-        <textarea id="rateComm" placeholder="اكتب رأيك في الخامة والمقاس..." rows="3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Cairo';"></textarea>
-        <button onclick="sendReview()" id="btnRev" style="width: 100%; background: #000; color: #fff; padding: 12px; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer; font-weight: bold;">نشر التقييم</button>
+   <div id="addReviewBox" style="margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
+    <h4>أضف تقييمك</h4>
+    
+    <div id="visitorNameBox" style="margin-bottom: 10px;">
+        <input type="text" id="visitorName" placeholder="اكتب اسمك هنا..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Cairo';">
     </div>
-    <div id="addReviewBox" style="display: none; margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
-   </div>
+
+    
+</div>
+       <div style="margin-bottom: 15px;">
+        <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px;">كيف كانت تجربتك؟</label>
+        <div id="starRating" style="font-size: 28px; color: #ccc; display: flex; gap: 8px; direction: ltr;">
+            <span class="star" data-value="1" style="cursor: pointer; transition: 0.3s;">★</span>
+            <span class="star" data-value="2" style="cursor: pointer; transition: 0.3s;">★</span>
+            <span class="star" data-value="3" style="cursor: pointer; transition: 0.3s;">★</span>
+            <span class="star" data-value="4" style="cursor: pointer; transition: 0.3s;">★</span>
+            <span class="star" data-value="5" style="cursor: pointer; transition: 0.3s;">★</span>
+        </div>
+        <input type="hidden" id="selectedRating" value="5">
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <textarea id="rateComm" placeholder="اكتب رأيك في الخامة والمقاس بكل صراحة..." rows="4" style="width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; background: #fcfcfc; font-family: 'Cairo'; outline: none; resize: none;"></textarea>
+    </div>
+
+    <button onclick="sendReview()" id="btnRev" style="width: 100%; background: #000; color: #fff; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s;">
+        نشر التقييم الآن
+    </button>
+</div>
 </div>
     <footer>
         <div class="footer-top">
@@ -1246,18 +1261,19 @@ window.loadReviews = async () => {
 setTimeout(loadReviews, 2000);
 window.sendReview = async () => {
     const comm = document.getElementById('rateComm').value;
-    const star = document.getElementById('rateStar').value;
+    const rating = document.getElementById('selectedRating').value;
+    const visitorName = document.getElementById('visitorName').value;
     const btn = document.getElementById('btnRev');
 
-    // تأكيد إضافي لجلب المستخدم الحالي
-    const user = auth.currentUser; 
-
-    if (!user) {
-        alert("خطأ: الفايربيز مش شايف تسجيل دخولك. جرب تعمل ريفريش أو سجل دخول تاني.");
-        return;
-    }
-
     if (!comm) return alert("اكتب تعليقك الأول");
+
+    // تحديد الاسم النهائي
+    let finalName = "زائر";
+    if (currentUser) {
+        finalName = currentUser.displayName || currentUser.email.split('@')[0];
+    } else {
+        finalName = visitorName || "عميل مجهول"; // لو ساب الاسم فاضي
+    }
 
     btn.innerText = "جاري النشر...";
     btn.disabled = true;
@@ -1265,33 +1281,41 @@ window.sendReview = async () => {
     try {
         await addDoc(collection(db, "reviews"), {
             productId: productId,
-            userName: user.displayName || user.email.split('@')[0],
-            userEmail: user.email, // مفيد عشانك أنت كأدمن
+            userName: finalName,
             comment: comm,
-            rating: parseInt(star),
+            rating: parseInt(rating),
             createdAt: new Date()
         });
         
-        alert("تم إضافة تقييمك بنجاح!");
-        document.getElementById('rateComm').value = "";
-        btn.innerText = "نشر التقييم";
-        btn.disabled = false;
-        loadReviews(); 
+        alert("شكراً لتقييمك يا " + finalName);
+        location.reload(); 
     } catch (e) {
-        console.error(e);
-        alert("حدث خطأ في الصلاحيات. تأكد من الـ Rules");
-        btn.innerText = "نشر التقييم";
+        alert("حدث خطأ أثناء النشر");
         btn.disabled = false;
     }
 };
+let selectedRating = 5;
+document.querySelectorAll('.star').forEach(star => {
+    star.onclick = function() {
+        selectedRating = this.dataset.value;
+        document.getElementById('selectedRating').value = selectedRating;
+        
+        // تغيير الألوان
+        document.querySelectorAll('.star').forEach(s => {
+            s.style.color = (s.dataset.value <= selectedRating) ? '#ffc107' : '#ccc';
+        });
+    }
+});
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
+    const visitorBox = document.getElementById('visitorNameBox');
+    
     if (user) {
-        // أول ما يتأكد إن فيه مستخدم، نظهر الصندوق فوراً
-        document.getElementById('addReviewBox').style.display = 'block';
+        // لو مسجل دخول، مش محتاجين نسأله عن اسمه
+        if(visitorBox) visitorBox.style.display = 'none';
     } else {
-        // لو مش مسجل، نخفيه (أو نظهر رسالة: سجل دخول لتتمكن من التقييم)
-        document.getElementById('addReviewBox').style.display = 'none';
+        // لو زائر، لازم يكتب اسم
+        if(visitorBox) visitorBox.style.display = 'block';
     }
 });
 
