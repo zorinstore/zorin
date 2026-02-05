@@ -627,7 +627,19 @@
         .nav-icons {
             gap: 15px;
         }
+        .swiper {
+    width: 100%;
+    max-width: 500px; /* أو المقاس اللي يريحك */
+    height: auto;
+    margin-bottom: 20px;
+}
+.swiper-button-next, .swiper-button-prev {
+    color: #000 !important; /* لون الأسهم أسود */
+    transform: scale(0.6); /* تصغير حجم الأسهم */
+}
     </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </head>
 
 <body>
@@ -719,12 +731,13 @@
 
     <div id="overlay" class="overlay" onclick="closeAll()"></div>
 
-    <div class="container">
-        <div class="product-gallery">
-            <img id="mainImage" src="" class="main-img">
-            <div class="thumb-grid" id="thumbnailGrid"></div>
+    <div class="swiper mySwiper">
+    <div class="swiper-wrapper" id="swiperWrapper">
         </div>
-
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-pagination"></div>
+</div>
         <div class="product-info">
             <div class="brand-name" translate="no">ZORIN STORE</div>
             <h1 class="product-title" id="productName">...</h1>
@@ -889,7 +902,7 @@
 
 
     <script type="module">
-        // 1. استيراد المكتبات المطلوبة من النسخة الجديدة
+    // 1. استيراد المكتبات المطلوبة من النسخة الجديدة
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, collection, onSnapshot, query, orderBy, where, getDocs, addDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -917,18 +930,21 @@
         let cart = JSON.parse(localStorage.getItem('zorin_cart')) || [];
         let currentUser = null;
 
-        // --- [1] نظام المستخدم والطلبات والـ Sidebars (من الكود الأول) ---
+        // --- [1] نظام المستخدم والطلبات والـ Sidebars ---
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             const navName = document.getElementById('navUserName');
+            const visitorBox = document.getElementById('visitorNameBox');
             if (user) {
                 const name = user.displayName || user.email.split('@')[0];
-                navName.innerText = name;
+                if(navName) navName.innerText = name;
                 document.getElementById('welcomeName').innerText = "Hi, " + name;
                 document.getElementById('userEmailTxt').innerText = user.email;
+                if(visitorBox) visitorBox.style.display = 'none';
                 loadUserOrders(user.email);
             } else {
-                navName.innerText = "Login";
+                if(navName) navName.innerText = "Login";
+                if(visitorBox) visitorBox.style.display = 'block';
             }
         });
 
@@ -959,7 +975,7 @@
             } catch (err) { console.error(err); }
         }
 
-        // --- [2] نظام صفحة المنتج والمخزون (من الكود الثاني) ---
+        // --- [2] نظام صفحة المنتج والمخزون ---
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
 
@@ -970,18 +986,37 @@
             if (snap.exists()) {
                 product = { id: snap.id, ...snap.data() };
                 renderProduct();
+                loadReviews();
             }
         }
-
 
         function renderProduct() {
             document.getElementById('productName').innerText = product.name;
             document.getElementById('currentPrice').innerText = (product.salePrice || product.price) + " EGP";
             if (product.salePrice < product.price) document.getElementById('oldPrice').innerText = product.price + " EGP";
-            document.getElementById('productDesc').innerText = product.description || "";
-            document.getElementById('mainImage').src = product.image;
-// السطر ده هو اللي هيعرض الكلام اللي جاي من الأدمن
-document.getElementById('productDescContent').innerText = product.pDesc || "لا يوجد وصف";            const colorSelector = document.getElementById('colorSelector');
+            document.getElementById('productDescContent').innerText = product.pDesc || "لا يوجد وصف";
+
+            // السلايدر (Slider)
+            const swiperWrapper = document.getElementById('swiperWrapper');
+            if(swiperWrapper) {
+                swiperWrapper.innerHTML = "";
+                const imagesToDisplay = product.allImages && product.allImages.length > 0 ? product.allImages : [product.image];
+                imagesToDisplay.forEach(imgUrl => {
+                    swiperWrapper.innerHTML += `
+                        <div class="swiper-slide">
+                            <img src="${imgUrl}" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 15px;">
+                        </div>`;
+                });
+
+                new Swiper(".mySwiper", {
+                    loop: true,
+                    pagination: { el: ".swiper-pagination", clickable: true },
+                    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+                    grabCursor: true,
+                });
+            }
+
+            const colorSelector = document.getElementById('colorSelector');
             colorSelector.innerHTML = "";
             product.variants.forEach((v, i) => {
                 const btn = document.createElement('div');
@@ -996,21 +1031,6 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
                 colorSelector.appendChild(btn);
                 if (i === 0) btn.click();
             });
-
-            if (product.allImages) {
-                const thumbGrid = document.getElementById('thumbnailGrid');
-                thumbGrid.innerHTML = "";
-                product.allImages.forEach(img => {
-                    const im = document.createElement('img');
-                    im.src = img;
-                    im.onclick = () => {
-                        document.getElementById('mainImage').src = img;
-                        document.querySelectorAll('.thumb-grid img').forEach(th => th.classList.remove('active'));
-                        im.classList.add('active');
-                    };
-                    thumbGrid.appendChild(im);
-                });
-            }
         }
 
         function renderSizes(stock) {
@@ -1040,7 +1060,7 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
             });
         }
 
-        // --- [3] العربة والدفع (Logic مدمج) ---
+        // --- [3] العربة والدفع ---
         window.changeQty = (val) => {
             if (!selectedSize) { alert("اختر المقاس أولاً"); return; }
             if (quantity + val < 1) return;
@@ -1066,55 +1086,53 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
         };
 
         window.confirmOrder = async () => {
-    const name = document.getElementById('custName').value;
-    const phone = document.getElementById('custPhone').value;
-    const addr = document.getElementById('custAddress').value;
-    if (!name || !phone || !addr) return alert("أكمل البيانات");
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const addr = document.getElementById('custAddress').value;
+            if (!name || !phone || !addr) return alert("أكمل البيانات");
 
-    let orderItems = tempItem ? [tempItem] : [...cart];
-    if (orderItems.length === 0) return alert("لا توجد منتجات");
+            let orderItems = tempItem ? [tempItem] : [...cart];
+            if (orderItems.length === 0) return alert("لا توجد منتجات");
 
-    const btn = document.getElementById('confirmBtn');
-    btn.innerText = "جاري التأكيد..."; btn.disabled = true;
+            const btn = document.getElementById('confirmBtn');
+            btn.innerText = "جاري التأكيد..."; btn.disabled = true;
 
-    try {
-        // 1. تسجيل الطلب
-        await addDoc(collection(db, "orders"), {
-            customer: { name, phone, address: addr, email: currentUser?.email || "Guest" },
-            items: orderItems,
-            total: orderItems.reduce((sum, item) => sum + (Number(item.price) * Number(item.qty)), 0),
-            status: "new",
-            createdAt: new Date()
-        });
-
-        // 2. تحديث المخزون بدقة
-        for (const item of orderItems) {
-            const productRef = doc(db, "products", item.id);
-            const pSnap = await getDoc(productRef);
-            if (pSnap.exists()) {
-                const pData = pSnap.data();
-                const updatedVariants = pData.variants.map(v => {
-                    if (v.color === item.color && v.stock && item.size in v.stock) {
-                        // تحويل القيم لأرقام لمنع خطأ الـ NaN
-                        let currentStock = Number(v.stock[item.size]) || 0;
-                        let orderedQty = Number(item.qty) || 1;
-                        v.stock[item.size] = Math.max(0, currentStock - orderedQty);
-                    }
-                    return v;
+            try {
+                await addDoc(collection(db, "orders"), {
+                    customer: { name, phone, address: addr, email: currentUser?.email || "Guest" },
+                    items: orderItems,
+                    total: orderItems.reduce((sum, item) => sum + (Number(item.price) * Number(item.qty)), 0),
+                    status: "new",
+                    createdAt: new Date()
                 });
-                await updateDoc(productRef, { variants: updatedVariants });
+
+                for (const item of orderItems) {
+                    const productRef = doc(db, "products", item.id);
+                    const pSnap = await getDoc(productRef);
+                    if (pSnap.exists()) {
+                        const pData = pSnap.data();
+                        const updatedVariants = pData.variants.map(v => {
+                            if (v.color === item.color && v.stock && item.size in v.stock) {
+                                let currentStock = Number(v.stock[item.size]) || 0;
+                                let orderedQty = Number(item.qty) || 1;
+                                v.stock[item.size] = Math.max(0, currentStock - orderedQty);
+                            }
+                            return v;
+                        });
+                        await updateDoc(productRef, { variants: updatedVariants });
+                    }
+                }
+                alert("تم استلام طلبك!");
+                localStorage.removeItem('zorin_cart');
+                location.href = "index.html";
+            } catch (error) { 
+                console.error(error); 
+                alert("خطأ في الطلب"); 
+                btn.innerText = "تأكيد الطلب"; btn.disabled = false; 
             }
-        }
-        alert("تم استلام طلبك!");
-        localStorage.removeItem('zorin_cart');
-        location.href = "index.html";
-    } catch (error) { 
-        console.error(error); 
-        alert("خطأ في الطلب: تأكد من صلاحيات قاعدة البيانات"); 
-        btn.innerText = "تأكيد الطلب"; btn.disabled = false; 
-    }
-};
-        // --- [4] وظائف الـ UI (فتح وإغلاق القوائم) ---
+        };
+
+        // --- [4] وظائف الـ UI ---
         window.toggleSidebar = (id) => {
             document.getElementById(id).classList.add('active');
             document.getElementById('overlay').classList.add('show');
@@ -1169,7 +1187,6 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
         window.confirmLogout = () => confirm("Logout?") && signOut(auth).then(() => location.reload());
         window.toggleDarkMode = () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('zorin_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); };
 
-        // إضافة وظيفة الـ Accordion للفوتر
         window.toggleAcc = (btn) => {
             const content = btn.nextElementSibling;
             const icon = btn.querySelector('i');
@@ -1184,141 +1201,80 @@ document.getElementById('productDescContent').innerText = product.pDesc || "لا
             }
         };
 
+        // دالة عرض التقييمات
+        window.loadReviews = async () => {
+            const list = document.getElementById('reviewsList');
+            try {
+                const q = query(collection(db, "reviews"), where("productId", "==", productId));
+                const snap = await getDocs(q);
+                if (snap.empty) {
+                    list.innerHTML = `<p style="color: #999;">لا توجد تقييمات بعد.</p>`;
+                    return;
+                }
+                let html = "";
+                snap.forEach(d => {
+                    const r = d.data();
+                    html += `
+                        <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <b style="font-size:14px;">${r.userName}</b>
+                                <span style="color:#ffc107;">${'⭐'.repeat(r.rating)}</span>
+                            </div>
+                            <p style="margin:5px 0; font-size:13px; color:#555;">${r.comment}</p>
+                            <small style="color:#bbb; font-size:10px;">${r.createdAt?.toDate().toLocaleDateString() || ''}</small>
+                        </div>`;
+                });
+                list.innerHTML = html;
+            } catch (e) { console.error("Error loading reviews:", e); }
+        };
+
+        // دالة إرسال التقييم الموحدة
+        window.sendReview = async () => {
+            const comm = document.getElementById('rateComm').value;
+            const rating = document.getElementById('selectedRating').value;
+            const visitorName = document.getElementById('visitorName').value;
+            const btn = document.getElementById('btnRev');
+
+            if (!comm) return alert("اكتب تعليقك الأول");
+
+            let finalName = currentUser ? (currentUser.displayName || currentUser.email.split('@')[0]) : (visitorName || "عميل مجهول");
+
+            btn.innerText = "جاري النشر..."; btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "reviews"), {
+                    productId: productId,
+                    userName: finalName,
+                    comment: comm,
+                    rating: parseInt(rating),
+                    createdAt: new Date()
+                });
+                alert("شكراً لتقييمك يا " + finalName);
+                location.reload(); 
+            } catch (e) {
+                alert("حدث خطأ أثناء النشر");
+                btn.disabled = false;
+                btn.innerText = "نشر التقييم";
+            }
+        };
+
+        // نظام النجوم
+        let selectedRating = 5;
+        document.querySelectorAll('.star').forEach(star => {
+            star.onclick = function() {
+                selectedRating = this.dataset.value;
+                document.getElementById('selectedRating').value = selectedRating;
+                document.querySelectorAll('.star').forEach(s => {
+                    s.style.color = (s.dataset.value <= selectedRating) ? '#ffc107' : '#ccc';
+                });
+            }
+        });
+
         window.onload = () => {
             if (localStorage.getItem('zorin_theme') === 'dark') document.body.classList.add('dark-mode');
             loadProduct();
             window.updateCart();
         };
-      // دالة إرسال التقييم
-window.sendReview = async () => {
-    const comm = document.getElementById('rateComm').value;
-    const star = document.getElementById('rateStar').value;
-    const btn = document.getElementById('btnRev');
-
-    if (!comm) return alert("اكتب تعليقك الأول");
-    
-    // تأكد إن productId متعرف فوق في الكود عندك
-    if (!productId) return alert("خطأ في معرف المنتج");
-
-    btn.innerText = "جاري النشر...";
-    btn.disabled = true;
-
-    try {
-        await addDoc(collection(db, "reviews"), {
-            productId: productId,
-            userName: currentUser ? (currentUser.displayName || currentUser.email.split('@')[0]) : "عميل مجهول",
-            comment: comm,
-            rating: parseInt(star),
-            createdAt: new Date()
-        });
-        
-        alert("تم إضافة تقييمك بنجاح!");
-        document.getElementById('rateComm').value = "";
-        btn.innerText = "نشر التقييم";
-        btn.disabled = false;
-        loadReviews(); // تحديث القائمة فوراً
-    } catch (e) {
-        console.error(e);
-        alert("لازم تكون مسجل دخول عشان تقيم");
-        btn.innerText = "نشر التقييم";
-        btn.disabled = false;
-    }
-};
-
-// دالة عرض التقييمات
-window.loadReviews = async () => {
-    const list = document.getElementById('reviewsList');
-    try {
-        // الاستعلام البسيط اللي عدلناه عشان الـ Index
-        const q = query(collection(db, "reviews"), where("productId", "==", productId));
-        const snap = await getDocs(q);
-        
-        if (snap.empty) {
-            list.innerHTML = `<p style="color: #999;">لا توجد تقييمات بعد.</p>`;
-            return;
-        }
-
-        let html = "";
-        snap.forEach(d => {
-            const r = d.data();
-            html += `
-                <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <b style="font-size:14px;">${r.userName}</b>
-                        <span style="color:#ffc107;">${'⭐'.repeat(r.rating)}</span>
-                    </div>
-                    <p style="margin:5px 0; font-size:13px; color:#555;">${r.comment}</p>
-                    <small style="color:#bbb; font-size:10px;">${r.createdAt?.toDate().toLocaleDateString() || ''}</small>
-                </div>`;
-        });
-        list.innerHTML = html;
-    } catch (e) {
-        console.error("Error loading reviews:", e);
-    }
-};
-
-// تشغيل جلب التقييمات عند فتح الصفحة
-setTimeout(loadReviews, 2000);
-window.sendReview = async () => {
-    const comm = document.getElementById('rateComm').value;
-    const rating = document.getElementById('selectedRating').value;
-    const visitorName = document.getElementById('visitorName').value;
-    const btn = document.getElementById('btnRev');
-
-    if (!comm) return alert("اكتب تعليقك الأول");
-
-    // تحديد الاسم النهائي
-    let finalName = "زائر";
-    if (currentUser) {
-        finalName = currentUser.displayName || currentUser.email.split('@')[0];
-    } else {
-        finalName = visitorName || "عميل مجهول"; // لو ساب الاسم فاضي
-    }
-
-    btn.innerText = "جاري النشر...";
-    btn.disabled = true;
-
-    try {
-        await addDoc(collection(db, "reviews"), {
-            productId: productId,
-            userName: finalName,
-            comment: comm,
-            rating: parseInt(rating),
-            createdAt: new Date()
-        });
-        
-        alert("شكراً لتقييمك يا " + finalName);
-        location.reload(); 
-    } catch (e) {
-        alert("حدث خطأ أثناء النشر");
-        btn.disabled = false;
-    }
-};
-let selectedRating = 5;
-document.querySelectorAll('.star').forEach(star => {
-    star.onclick = function() {
-        selectedRating = this.dataset.value;
-        document.getElementById('selectedRating').value = selectedRating;
-        
-        // تغيير الألوان
-        document.querySelectorAll('.star').forEach(s => {
-            s.style.color = (s.dataset.value <= selectedRating) ? '#ffc107' : '#ccc';
-        });
-    }
-});
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    const visitorBox = document.getElementById('visitorNameBox');
-    
-    if (user) {
-        // لو مسجل دخول، مش محتاجين نسأله عن اسمه
-        if(visitorBox) visitorBox.style.display = 'none';
-    } else {
-        // لو زائر، لازم يكتب اسم
-        if(visitorBox) visitorBox.style.display = 'block';
-    }
-});
-
     </script>
 </body>
 
