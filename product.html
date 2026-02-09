@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar">
 
@@ -637,6 +638,53 @@
     color: #000 !important; /* لون الأسهم أسود */
     transform: scale(0.6); /* تصغير حجم الأسهم */
 }
+.related-section {
+  margin-top: 60px;
+}
+
+.related-section h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.related-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.related-card:hover {
+  transform: translateY(-5px);
+}
+
+.related-card img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+}
+
+.related-card .info {
+  padding: 12px;
+}
+
+.related-card .info h4 {
+  font-size: 14px;
+  margin: 0 0 6px;
+}
+
+.related-card .info span {
+  font-weight: bold;
+}
+
     </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -834,6 +882,11 @@
     </button>
 </div>
 </div>
+<section class="related-section">
+  <h2>منتجات قد تعجبك</h2>
+  <div id="relatedProducts" class="related-grid"></div>
+</section>
+
     <footer>
         <div class="footer-top">
             <div class="footer-about">
@@ -987,6 +1040,7 @@
                 product = { id: snap.id, ...snap.data() };
                 renderProduct();
                 loadReviews();
+                loadRelatedProducts();
             }
         }
 
@@ -1032,6 +1086,54 @@
                 if (i === 0) btn.click();
             });
         }
+async function loadRelatedProducts() {
+
+    if (!product || !product.categories || product.categories.length === 0) return;
+
+    const mainCategory = product.categories[0]; // أول كاتيجوري
+
+    const q = query(
+        collection(db, "products"),
+        where("categories", "array-contains", mainCategory)
+    );
+
+    const snap = await getDocs(q);
+
+    const container = document.getElementById("relatedProducts");
+    if(!container) return;
+
+    container.innerHTML = "";
+
+    let count = 0;
+
+    snap.forEach(docSnap => {
+
+        if(docSnap.id === product.id) return; // يمنع المنتج الحالي
+
+        if(count >= 4) return; // نعرض 4 بس
+
+        const p = docSnap.data();
+
+        const img = (p.allImages && p.allImages.length > 0) 
+            ? p.allImages[0] 
+            : p.image;
+
+        container.innerHTML += `
+            <div class="related-card"
+                 onclick="location.href='product.html?id=${docSnap.id}'">
+
+                <img src="${img}" alt="">
+
+                <div class="info">
+                    <h4>${p.name}</h4>
+                    <span>${p.salePrice || p.price} EGP</span>
+                </div>
+            </div>
+        `;
+
+        count++;
+    });
+}
 
         function renderSizes(stock) {
             const sizeSelector = document.getElementById('sizeSelector');
