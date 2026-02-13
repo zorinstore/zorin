@@ -887,8 +887,7 @@
 </div>
 <section class="related-section">
   <h2>منتجات قد تعجبك</h2>
-  <div id="relatedProducts" class="related-grid"></div>
-</section>
+<div id="relatedProductsGrid" class="related-grid"></div>
 
     <footer>
         <div class="footer-top">
@@ -1089,53 +1088,40 @@
                 if (i === 0) btn.click();
             });
         }
-async function loadRelatedProducts() {
+async function loadRelatedProducts(catName) {
+    const grid = document.getElementById('relatedProductsGrid'); // التأكد من تطابق الاسم هنا
+    if (!grid) return;
+    try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        let html = "";
+        let count = 0;
+        const cleanCat = catName ? catName.trim().toLowerCase() : "";
 
-    if (!product || !product.categories || product.categories.length === 0) return;
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const dbCat = data.category ? data.category.trim().toLowerCase() : "";
 
-    const mainCategory = product.categories[0]; // أول كاتيجوري
-
-    const q = query(
-        collection(db, "products"),
-        where("categories", "array-contains", mainCategory)
-    );
-
-    const snap = await getDocs(q);
-
-    const container = document.getElementById("relatedProducts");
-    if(!container) return;
-
-    container.innerHTML = "";
-
-    let count = 0;
-
-    snap.forEach(docSnap => {
-
-        if(docSnap.id === product.id) return; // يمنع المنتج الحالي
-
-        if(count >= 4) return; // نعرض 4 بس
-
-        const p = docSnap.data();
-
-        const img = (p.allImages && p.allImages.length > 0) 
-            ? p.allImages[0] 
-            : p.image;
-
-        container.innerHTML += `
-            <div class="related-card"
-                 onclick="location.href='product.html?id=${docSnap.id}'">
-
-                <img src="${img}" alt="">
-
-                <div class="info">
-                    <h4>${p.name}</h4>
-                    <span>${p.salePrice || p.price} EGP</span>
-                </div>
-            </div>
-        `;
-
-        count++;
-    });
+            if (dbCat === cleanCat && doc.id !== productId && count < 4) {
+                // الحسبة اللي بتسأل عليها: هل فيه خصم؟
+                const hasSale = data.salePrice && Number(data.salePrice) < Number(data.price);
+                
+                html += `
+                <div class="product-card" onclick="location.href='product.html?id=${doc.id}'" style="position:relative; cursor:pointer; background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+                    ${hasSale ? `<div style="position:absolute; top:10px; right:10px; background:var(--sale); color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:bold; z-index:1;">SALE</div>` : ''}
+                    <img src="${data.image}" style="width:100%; aspect-ratio:1/1; object-fit:cover;">
+                    <div style="padding:10px; text-align:right;">
+                        <div style="font-size:12px; font-weight:bold; height:34px; overflow:hidden; color:var(--text);">${data.name}</div>
+                        <div style="margin-top:5px;">
+                            <span style="color:var(--sale); font-weight:bold;">${hasSale ? data.salePrice : data.price} EGP</span>
+                            ${hasSale ? `<span style="text-decoration:line-through; color:#888; font-size:10px; margin-right:5px;">${data.price} EGP</span>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+                count++;
+            }
+        });
+        grid.innerHTML = html || "<p style='text-align:center; width:100%; color:#888;'>لا توجد منتجات مشابهة</p>";
+    } catch (err) { console.error("Related Error:", err); }
 }
 
         function renderSizes(stock) {
@@ -1384,4 +1370,5 @@ async function loadRelatedProducts() {
 </body>
 
 </html>
+
 
