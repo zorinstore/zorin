@@ -81,6 +81,10 @@
     <div class="nav-link" onclick="tab('reviewsAdmin', this)">
     <i class="fas fa-comments"></i> التقييمات
 </div>
+<div class="nav-link" onclick="tab('promo', this)">
+    <i class="fas fa-tags"></i> البروموكود
+</div>
+
     <div class="nav-link" onclick="logout()" style="margin-top: auto; color: #ff4444;"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</div>
 </aside>
 
@@ -132,12 +136,30 @@
         <h3>الطلبات الواردة</h3>
         <div id="ordContainer"></div>
     </section>
+    
     <section id="reviewsAdmin" class="section">
     <div class="header-flex">
         <h2>إدارة تقييمات العملاء ⭐</h2>
     </div>
     <div id="adminReviewsList" class="admin-grid">
-        </div>
+      </div>
+</section>
+
+<section id="promo" class="section">
+  <h2>إدارة البروموكود</h2>
+
+  <input type="text" id="promoCodeInput" placeholder="Promo Code">
+  
+  <select id="discountType">
+    <option value="percentage">Percentage %</option>
+    <option value="fixed">Fixed Amount</option>
+  </select>
+
+  <input type="number" id="discountValue" placeholder="Discount Value">
+
+  <button onclick="addPromo()">Add Promo</button>
+
+  <ul id="promoList" style="margin-top:20px;"></ul>
 </section>
 </main>
 
@@ -156,12 +178,10 @@
 </script>
 
 <script type="module">
-    // 1. استيراد المكتبات المطلوبة من النسخة الجديدة
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, onSnapshot, query, orderBy, where, getDocs, doc, addDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // 2. بيانات مشروع ZORIN STORE 2026 الجديد
     const firebaseConfig = {
         apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
         authDomain: "zorin-store-2026.firebaseapp.com",
@@ -176,20 +196,19 @@
     const auth = getAuth(app);
     const ADMIN_EMAIL = "zorinstore2026@gmail.com";
 
- // في ملف admin.html - سطر 149 تقريباً
+    let originalPrice = 0;
+let finalPrice = 0;
+let appliedPromoCode = null;
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // لو المستخدم موجود، نتحقق من الإيميل
         if (user.email === ADMIN_EMAIL) {
             console.log("Welcome Admin");
-            // هنا بنسيبه في الصفحة عادي
-            document.body.style.opacity = "1"; // إظهار الصفحة بعد التأكد
+            document.body.style.opacity = "1";
         } else {
-            // لو مسجل بإيميل زبون عادي
             window.location.href = 'index.html';
         }
     } else {
-        // في حالة مفيش مستخدم خالص (بعد ما الفايربيز خلص تحميل)
         window.location.href = 'login.html';
     }
 });
@@ -225,7 +244,7 @@ onAuthStateChanged(auth, (user) => {
     const btn = document.getElementById('saveBtn');
     const pName = document.getElementById('pName').value;
     const pPrice = document.getElementById('pPrice').value;
-    const pDescription = document.getElementById('productDescription').value; // جلب الوصف
+    const pDescription = document.getElementById('productDescription').value; 
 
     if(!pName || !pPrice || variants.length === 0) return alert("أكمل بيانات المنتج");
     
@@ -245,12 +264,11 @@ onAuthStateChanged(auth, (user) => {
         const selectedCategories = [];
         document.querySelectorAll('input[name="categories"]:checked').forEach(cb => selectedCategories.push(cb.value));
 
-        // الرفع لمرة واحدة فقط وببيانات كاملة
         await addDoc(collection(db, "products"), {
             name: pName, 
             price: Number(pPrice), 
             salePrice: Number(pPrice),
-            pDesc: pDescription, // الحقل ده هو اللي هنربطه
+            pDesc: pDescription, 
             categories: selectedCategories, 
             variants: variants, 
             image: urls[0], 
@@ -274,7 +292,6 @@ onAuthStateChanged(auth, (user) => {
             const p = d.data(); const pid = d.id;
             let vHtml = "";
             (p.variants || []).forEach((v, idx) => {
-                // تعديل هنا لإضافة عناوين المقاسات (M, L, XL, XXL) في صفحة المخزن
                 vHtml += `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-top:5px;">
                     <div style="font-weight:bold; font-size:12px; margin-bottom:5px;">اللون: ${v.color}</div>
                     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px; text-align:center;">
@@ -310,51 +327,89 @@ onAuthStateChanged(auth, (user) => {
     window.delP = async (id) => { if(confirm("حذف المنتج؟")) await deleteDoc(doc(db, "products", id)); };
 
     onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
-        const ordContainer = document.getElementById('ordContainer');
-        if(!ordContainer) return;
-        ordContainer.innerHTML = "";
-        snap.forEach(d => {
-            const o = d.data(); const oid = d.id;
-            let itemsHtml = (o.items || []).map(item => `
-                <div style="display:flex; gap:10px; font-size:13px; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:8px;">
-                    <img src="${item.image}" style="width:40px; height:55px; object-fit:cover; border-radius:4px;">
-                    <div style="flex:1;">
-                        <b>${item.name}</b><br>
-                        <small>${item.color} | ${item.size}</small><br>
-                        <span>الكمية: ${item.qty || 1} | ${item.price * (item.qty || 1)} EGP</span>
-                    </div>
-                </div>`).join('');
+    const ordContainer = document.getElementById('ordContainer');
+    if(!ordContainer) return;
+    ordContainer.innerHTML = "";
 
-            ordContainer.innerHTML += `
-                <div class="glass-card" style="border-right:5px solid #000;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <small style="color:#888;">#${oid.substring(0,6)}</small>
-                        <span style="background:#000; color:#fff; padding:2px 10px; border-radius:20px; font-size:11px;">${o.status === 'new' ? 'جديد' : 'مكتمل'}</span>
+    snap.forEach(d => {
+        const o = d.data(); 
+        const oid = d.id;
+
+        // حساب السعر قبل الخصم
+        let originalTotal = (o.items || []).reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+
+        // حساب قيمة الخصم
+        let discountValue = 0;
+        if(o.promoUsed && o.promoType && o.promoValue){
+            if(o.promoType === "fixed"){
+                discountValue = o.promoValue;
+            } else if(o.promoType === "percentage"){
+                discountValue = Math.round(originalTotal * (o.promoValue / 100));
+            }
+        }
+
+        // السعر النهائي بعد الخصم
+        let totalAfterDiscount = originalTotal - discountValue;
+
+        // HTML المنتجات
+        let itemsHtml = (o.items || []).map(item => `
+            <div style="display:flex; gap:10px; font-size:13px; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:8px;">
+                <img src="${item.image}" style="width:40px; height:55px; object-fit:cover; border-radius:4px;">
+                <div style="flex:1;">
+                    <b>${item.name}</b><br>
+                    <small>${item.color} | ${item.size}</small><br>
+                    <span>الكمية: ${item.qty || 1} | ${(item.price * (item.qty || 1)).toFixed(2)} EGP</span>
+                </div>
+            </div>`).join('');
+
+        // HTML الخصم والسعر النهائي
+        let discountHtml = o.promoUsed ? `
+            <div style="text-decoration:line-through; color:#888;">السعر قبل الخصم: ${originalTotal.toFixed(2)} EGP</div>
+            <div style="color:red;">قيمة الخصم: ${discountValue.toFixed(2)} EGP</div>
+            <div>كود الخصم المستخدم: <b>${o.promoUsed}</b></div>
+        ` : `<div>السعر قبل الخصم: ${originalTotal.toFixed(2)} EGP</div>`;
+
+        ordContainer.innerHTML += `
+            <div class="glass-card" style="border-right:5px solid #000; margin-bottom:15px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <small style="color:#888;">#${oid.substring(0,6)}</small>
+                    <span style="background:#000; color:#fff; padding:2px 10px; border-radius:20px; font-size:11px;">
+                        ${o.status === 'new' ? 'جديد' : 'مكتمل'}
+                    </span>
+                </div>
+                <div style="margin-bottom:15px; font-size:14px;">
+                    <b><i class="fas fa-user"></i> ${o.customer.name}</b><br>
+                    <i class="fas fa-phone"></i> ${o.customer.phone}<br>
+                    <i class="fas fa-map-marker-alt"></i> ${o.customer.address}
+                </div>
+                <div style="background:#f9f9f9; padding:10px; border-radius:8px;">
+                    ${itemsHtml}
+                    <div style="text-align:left; margin-top:10px; font-size:14px;">
+                        ${discountHtml}
+                        <div style="font-weight:bold; font-size:16px; margin-top:5px;">
+                            المبلغ المطلوب دفعه: ${totalAfterDiscount.toFixed(2)} EGP
+                        </div>
                     </div>
-                    <div style="margin-bottom:15px; font-size:14px;">
-                        <b><i class="fas fa-user"></i> ${o.customer.name}</b><br>
-                        <i class="fas fa-phone"></i> ${o.customer.phone}<br>
-                        <i class="fas fa-map-marker-alt"></i> ${o.customer.address}
-                    </div>
-                    <div style="background:#f9f9f9; padding:10px; border-radius:8px;">
-                        ${itemsHtml}
-                        <div style="text-align:left; font-weight:bold; margin-top:10px; font-size:16px;">الإجمالي: ${o.total} EGP</div>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:15px;">
-                        <a href="https://wa.me/2${o.customer.phone}" target="_blank" style="flex:1; background:#25d366; color:#fff; text-decoration:none; text-align:center; padding:10px; border-radius:5px; font-weight:bold;"><i class="fab fa-whatsapp"></i> واتساب</a>
-                        <button onclick="delOrder('${oid}')" style="background:#ff4444; color:#fff; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`;
-        });
+                </div>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <a href="https://wa.me/2${o.customer.phone}" target="_blank" style="flex:1; background:#25d366; color:#fff; text-decoration:none; text-align:center; padding:10px; border-radius:5px; font-weight:bold;">
+                        <i class="fab fa-whatsapp"></i> واتساب
+                    </a>
+                    <button onclick="delOrder('${oid}')" style="background:#ff4444; color:#fff; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>`;
     });
+});
+
+
 
     window.delOrder = async (id) => { if(confirm("حذف الطلب نهائياً؟")) await deleteDoc(doc(db, "orders", id)); };
-// دالة عرض التقييمات للأدمن (تحديث لحظي)
 function loadReviewsForAdmin() {
     const container = document.getElementById('adminReviewsList');
     if (!container) return;
 
-    // بنستخدم db اللي اتعرفت فوق في سطر 143
     const q = query(collection(db, "reviews"), orderBy("createdAt", "desc")); 
     
     onSnapshot(q, (snap) => {
@@ -389,7 +444,6 @@ function loadReviewsForAdmin() {
     });
 }
 
-// دالة الحذف (ربطها بـ window عشان الـ onclick يشوفها)
 window.deleteReview = async (id) => {
     if (confirm("هل أنت متأكد من حذف هذا التقييم؟")) {
         try {
@@ -401,8 +455,96 @@ window.deleteReview = async (id) => {
     }
 };
 
-// تشغيل الدالة داخل الموديول
+
+
+// تعريف مجموعة البروموكود
+const promoCollection = collection(db, "promoCodes");
+
+// دالة عرض البروموكودات
+function renderPromos() {
+    const list = document.getElementById("promoList");
+    if (!list) return;
+
+    const q = query(promoCollection, orderBy("createdAt", "desc"));
+    onSnapshot(q, (snap) => {
+        list.innerHTML = "";
+        if (snap.empty) {
+            list.innerHTML = "<li style='color:#888;'>لا توجد بروموكودات حالياً</li>";
+            return;
+        }
+
+        snap.forEach(docSnap => {
+            const promo = docSnap.data();
+            const id = docSnap.id;
+            list.innerHTML += `
+                <li style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span><b>${promo.code}</b> - ${promo.discountType === "percentage" ? promo.discountValue + "%" : promo.discountValue + " EGP"}</span>
+                    <button onclick="deletePromo('${id}')" 
+                        style="background:red;color:#fff;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;">
+                        حذف
+                    </button>
+                </li>
+            `;
+        });
+    });
+}
+
+// دالة إضافة بروموكود جديد
+window.addPromo = async function () {
+    const code = document.getElementById("promoCodeInput").value.trim().toUpperCase();
+    const type = document.getElementById("discountType").value;
+    const value = parseFloat(document.getElementById("discountValue").value);
+
+    if (!code || !value) {
+        alert("اكمل كل البيانات");
+        return;
+    }
+
+    try {
+        // تحقق من وجود الكود مسبقًا
+        const q = query(promoCollection, where("code", "==", code));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+            alert("هذا الكود موجود بالفعل!");
+            return;
+        }
+
+        // إضافة الكود مع createdAt
+        await addDoc(promoCollection, {
+            code: code,
+            discountType: type,
+            discountValue: value,
+            createdAt: new Date()
+        });
+
+        // مسح الحقول بعد الإضافة
+        document.getElementById("promoCodeInput").value = "";
+        document.getElementById("discountValue").value = "";
+
+        alert("تمت الإضافة ✅");
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الإضافة");
+    }
+};
+
+// دالة حذف بروموكود
+window.deletePromo = async function (id) {
+    if (confirm("هل تريد حذف البروموكود؟")) {
+        try {
+            await deleteDoc(doc(db, "promoCodes", id));
+        } catch (err) {
+            console.error(err);
+            alert("فشل الحذف");
+        }
+    }
+};
+
+// عرض البروموكود فور تحميل الصفحة
+renderPromos();
+
 loadReviewsForAdmin();
 </script>
 </body>
 </html>
+
