@@ -331,18 +331,19 @@
             text-align: center;
         }
 
-        .sale-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: var(--sale);
-            color: #fff;
-            padding: 5px 12px;
-            font-size: 11px;
-            font-weight: bold;
-            border-radius: 4px;
-            z-index: 2;
-        }
+      .sale-badge{
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:#e63946;
+    color:#fff;
+    padding:5px 10px;
+    font-size:11px;
+    font-weight:bold;
+    border-radius:4px;
+    z-index:2;
+    font-family:'Cairo',sans-serif;
+}
 
         .product-price {
             display: flex;
@@ -1221,13 +1222,16 @@ window.toggleCart = (show) => {
         const p = doc.data();
         const pid = doc.id;
         const hasSale = p.salePrice && Number(p.salePrice) < Number(p.price);
+        let salePercent = 0;
+if (hasSale) {
+    salePercent = Math.round(((p.price - p.salePrice) / p.price) * 100);
+}
         const images = (p.allImages && p.allImages.length > 0) ? p.allImages : [p.image];
         const imagesJson = JSON.stringify(images).replace(/"/g, '&quot;');
 
         display.innerHTML += `
             <div class="p-card" data-aos="fade-up" style="position:relative;"> 
-                ${hasSale ? '<span class="sale-badge">SALE</span>' : ''}
-                <div class="img-wrapper">
+${hasSale ? `<span class="sale-badge">SALE -${salePercent}%</span>` : ''}                <div class="img-wrapper">
                     <img src="${images[0]}" class="p-img" id="img-${pid}" onclick="location.href='product.html?id=${pid}'">
                     
                     ${images.length > 1 ? `
