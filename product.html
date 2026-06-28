@@ -1148,7 +1148,7 @@ async function loadRelatedProducts(catName) {
             document.getElementById('qtyVal').innerText = "1";
             document.getElementById('stockNotice').innerText = "";
 
-            ['M', 'L', 'XL', 'XXL'].forEach(s => {
+            ['S', 'M', 'L', 'XL', 'XXL'].forEach(s => {
                 const tag = document.createElement('div');
                 const avail = parseInt(stock[s]) || 0;
                 tag.className = avail > 0 ? 'tag' : 'tag disabled';
