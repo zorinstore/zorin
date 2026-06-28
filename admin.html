@@ -1,308 +1,541 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZORIN | Admin Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Syncopate:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg-light: #f4f7f6; --white: #ffffff; --text-dark: #333; --accent: #000; --border: #e0e0e0; }
-        body { margin: 0; font-family: 'Cairo', sans-serif; background: var(--bg-light); color: var(--text-dark); display: flex; overflow-x: hidden; }
-        
+        :root {
+            --bg-light: #f4f7f6;
+            --white: #ffffff;
+            --text-dark: #333;
+            --accent: #000;
+            --border: #e0e0e0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            overflow-x: hidden;
+        }
+
         /* زر القائمة للموبايل فقط */
         .menu-toggle {
-            display: none; position: fixed; top: 15px; right: 15px; 
-            background: #000; color: #fff; border: none; padding: 10px 15px;
-            border-radius: 8px; z-index: 2000; cursor: pointer; font-size: 20px;
+            display: none;
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 2000;
+            cursor: pointer;
+            font-size: 20px;
         }
 
         /* Sidebar */
-        aside { 
-            width: 260px; background: #000; padding: 30px 15px; position: fixed; 
-            height: 100vh; right: 0; color: #fff; box-shadow: -2px 0 10px rgba(0,0,0,0.1); 
-            z-index: 1500; transition: transform 0.3s ease;
+        aside {
+            width: 260px;
+            background: #000;
+            padding: 30px 15px;
+            position: fixed;
+            height: 100vh;
+            right: 0;
+            color: #fff;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1500;
+            transition: transform 0.3s ease;
         }
-        
-        .brand { text-align: center; margin-bottom: 40px; }
-        .brand img { width: 85px; height: 85px; border-radius: 50%; border: 2px solid #333; object-fit: cover; }
-        
-        .nav-link { padding: 14px; color: #aaa; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; margin-bottom: 8px; transition: 0.3s; }
-        .nav-link.active, .nav-link:hover { background: #222; color: #fff; }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .brand img {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            object-fit: cover;
+        }
+
+        .nav-link {
+            padding: 14px;
+            color: #aaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            background: #222;
+            color: #fff;
+        }
 
         /* Main Content */
-        main { flex: 1; margin-right: 260px; padding: 40px; min-height: 100vh; transition: margin 0.3s ease; width: 100%; }
-        .section { display: none; max-width: 900px; margin: 0 auto; }
-        .section.active { display: block; animation: fadeIn 0.3s; }
+        main {
+            flex: 1;
+            margin-right: 260px;
+            padding: 40px;
+            min-height: 100vh;
+            transition: margin 0.3s ease;
+            width: 100%;
+        }
+
+        .section {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
 
         /* تنسيقات الموبايل */
         @media (max-width: 768px) {
-            .menu-toggle { display: block; }
-            aside { transform: translateX(100%); } /* إخفاء السايد بار خارج الشاشة */
-            aside.open { transform: translateX(0); } /* إظهاره عند الضغط */
-            main { margin-right: 0; padding: 70px 15px 20px; }
-            
-            .stock-row { grid-template-columns: 1fr 1fr !important; gap: 10px; }
-            .photo-grid { grid-template-columns: repeat(2, 1fr) !important; }
-            .glass-card { padding: 15px; }
+            .menu-toggle {
+                display: block;
+            }
+
+            aside {
+                transform: translateX(100%);
+            }
+
+            /* إخفاء السايد بار خارج الشاشة */
+            aside.open {
+                transform: translateX(0);
+            }
+
+            /* إظهاره عند الضغط */
+            main {
+                margin-right: 0;
+                padding: 70px 15px 20px;
+            }
+
+            .stock-row {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px;
+            }
+
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .glass-card {
+                padding: 15px;
+            }
         }
 
         /* باقي التنسيقات الأصلية بدون تغيير */
-        .glass-card { background: var(--white); border: 1px solid var(--border); padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 25px; }
-        h3 { margin-top: 0; font-weight: 700; color: var(--accent); border-right: 4px solid var(--accent); padding-right: 15px; margin-bottom: 25px; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Cairo'; font-size: 14px; box-sizing: border-box; }
-        .stock-row { display: grid; grid-template-columns: 2fr repeat(4, 1fr) auto; gap: 10px; align-items: end; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid var(--border); }
-        .stock-box { text-align: center; }
-        .stock-box label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 5px; }
-        .stock-box input { margin: 0; text-align: center; padding: 8px; border: 1px solid #ddd; }
-        .variant-item { background: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .photo-input { background: #f9f9f9; border: 1px dashed #ccc; padding: 10px; border-radius: 8px; font-size: 11px; }
-        .submit-btn { background: var(--accent); color: #fff; padding: 16px; border: none; width: 100%; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 16px; transition: 0.3s; }
-        .category-selector { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .cat-tag input { display: none; }
-        .cat-tag span { display: inline-block; padding: 8px 18px; border: 1px solid #ddd; border-radius: 25px; font-size: 13px; cursor: pointer; background: #f9f9f9; }
-        .cat-tag input:checked + span { background: #000; color: #fff; border-color: #000; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .glass-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            margin-bottom: 25px;
+        }
+
+        h3 {
+            margin-top: 0;
+            font-weight: 700;
+            color: var(--accent);
+            border-right: 4px solid var(--accent);
+            padding-right: 15px;
+            margin-bottom: 25px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Cairo';
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .stock-row {
+            display: grid;
+            grid-template-columns: 2fr repeat(5, 1fr) auto;
+            gap: 10px;
+            align-items: end;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .stock-box {
+            text-align: center;
+        }
+
+        .stock-box label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .stock-box input {
+            margin: 0;
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .variant-item {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .photo-input {
+            background: #f9f9f9;
+            border: 1px dashed #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .submit-btn {
+            background: var(--accent);
+            color: #fff;
+            padding: 16px;
+            border: none;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .category-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .cat-tag input {
+            display: none;
+        }
+
+        .cat-tag span {
+            display: inline-block;
+            padding: 8px 18px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 13px;
+            cursor: pointer;
+            background: #f9f9f9;
+        }
+
+        .cat-tag input:checked+span {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
-<aside id="sidebar">
-    <div class="brand" translate="no">
-        <img src="logo.jpg.jpeg" alt="ZORIN Logo" style="width: 85px; height: 85px;">
-        <h2 style="font-family:'Syncopate'; font-size: 1.1rem; letter-spacing: 2px;">ZORIN</h2>
-    </div>
-    <div class="nav-link active" onclick="tab('add', this)"><i class="fas fa-plus-circle"></i> إضافة منتج</div>
-    <div class="nav-link" onclick="tab('inv', this)"><i class="fas fa-layer-group"></i> المخزن</div>
-    <div class="nav-link" onclick="tab('ord', this)"><i class="fas fa-truck"></i> الطلبات</div>
-    <div class="nav-link" onclick="tab('reviewsAdmin', this)">
-    <i class="fas fa-comments"></i> التقييمات
-</div>
-<div class="nav-link" onclick="tab('promo', this)">
-    <i class="fas fa-tags"></i> البروموكود
-</div>
-
-    <div class="nav-link" onclick="logout()" style="margin-top: auto; color: #ff4444;"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</div>
-</aside>
-
-<main>
-    <section id="add" class="section active">
-        <h3>رفع منتج جديد</h3>
-        <div class="glass-card">
-            <input type="text" id="pName" placeholder="اسم القطعة">
-            <input type="number" id="pPrice" placeholder="السعر">
-            
-            <div class="stock-row">
-                <div class="stock-box"><label>اللون</label><input type="text" id="vColor" placeholder="أسود"></div>
-                <div class="stock-box"><label>M</label><input type="number" id="vM" value="0"></div>
-                <div class="stock-box"><label>L</label><input type="number" id="vL" value="0"></div>
-                <div class="stock-box"><label>XL</label><input type="number" id="vXL" value="0"></div>
-                <div class="stock-box"><label>XXL</label><input type="number" id="vXXL" value="0"></div>
-                <button type="button" onclick="addV()" style="background:#000; color:#fff; border:none; padding:10px 15px; border-radius:6px; cursor:pointer;"><i class="fas fa-plus"></i></button>
-            </div>
-            
-            <div style="margin-top:20px;">
-                <label style="font-weight:bold; font-size:13px; margin-bottom:10px; display:block;">SELECT CATEGORIES</label>
-                <div class="category-selector">
-                    <label class="cat-tag"><input type="checkbox" name="categories" value="tops"><span>Tops</span></label>
-                    <label class="cat-tag"><input type="checkbox" name="categories" value="bottoms"><span>Bottoms</span></label>
-                    <label class="cat-tag"><input type="checkbox" name="categories" value="sets"><span>Full Sets</span></label>
-                    <label class="cat-tag"><input type="checkbox" name="categories" value="new-arrival"><span>New Arrival</span></label>
-                </div>
-            </div>
-
-            <div id="variantList"></div>
-            <textarea id="productDescription" rows="3" placeholder="وصف المنتج، الخامة..." style="margin-top:15px;"></textarea>
-            
-            <label style="font-size: 13px; font-weight: bold; margin-bottom: 10px; display: block;">صور المنتج (حتى 6 صور):</label>
-            <div class="photo-grid">
-                <input type="file" class="photo-input" id="f1"> <input type="file" class="photo-input" id="f2">
-                <input type="file" class="photo-input" id="f3"> <input type="file" class="photo-input" id="f4">
-                <input type="file" class="photo-input" id="f5"> <input type="file" class="photo-input" id="f6">
-            </div>
-            <button class="submit-btn" id="saveBtn" onclick="save()">نشر المنتج الآن</button>
+    <aside id="sidebar">
+        <div class="brand" translate="no">
+            <img src="logo.jpg.jpeg" alt="ZORIN Logo" style="width: 85px; height: 85px;">
+            <h2 style="font-family:'Syncopate'; font-size: 1.1rem; letter-spacing: 2px;">ZORIN</h2>
         </div>
-    </section>
+        <div class="nav-link active" onclick="tab('add', this)"><i class="fas fa-plus-circle"></i> إضافة منتج</div>
+        <div class="nav-link" onclick="tab('inv', this)"><i class="fas fa-layer-group"></i> المخزن</div>
+        <div class="nav-link" onclick="tab('ord', this)"><i class="fas fa-truck"></i> الطلبات</div>
+        <div class="nav-link" onclick="tab('reviewsAdmin', this)">
+            <i class="fas fa-comments"></i> التقييمات
+        </div>
+        <div class="nav-link" onclick="tab('promo', this)">
+            <i class="fas fa-tags"></i> البروموكود
+        </div>
 
-    <section id="inv" class="section">
-        <h3>إدارة المخزن والأسعار</h3>
-        <div id="invContainer"></div>
-    </section>
+        <div class="nav-link" onclick="logout()" style="margin-top: auto; color: #ff4444;"><i
+                class="fas fa-sign-out-alt"></i> تسجيل الخروج</div>
+    </aside>
 
-    <section id="ord" class="section">
-        <h3>الطلبات الواردة</h3>
-        <div id="ordContainer"></div>
-    </section>
-    
-    <section id="reviewsAdmin" class="section">
-    <div class="header-flex">
-        <h2>إدارة تقييمات العملاء ⭐</h2>
-    </div>
-    <div id="adminReviewsList" class="admin-grid">
-      </div>
-</section>
+    <main>
+        <section id="add" class="section active">
+            <h3>رفع منتج جديد</h3>
+            <div class="glass-card">
+                <input type="text" id="pName" placeholder="اسم القطعة">
+                <input type="number" id="pPrice" placeholder="السعر">
 
-<section id="promo" class="section">
-  <h2>إدارة البروموكود</h2>
+                <div class="stock-row">
+                    <div class="stock-box"><label>اللون</label><input type="text" id="vColor" placeholder="أسود"></div>
+                    <div class="stock-box"><label>S</label><input type="number" id="vS" value="0"></div>
+                    <div class="stock-box"><label>M</label><input type="number" id="vM" value="0"></div>
+                    <div class="stock-box"><label>L</label><input type="number" id="vL" value="0"></div>
+                    <div class="stock-box"><label>XL</label><input type="number" id="vXL" value="0"></div>
+                    <div class="stock-box"><label>XXL</label><input type="number" id="vXXL" value="0"></div>
+                    <button type="button" onclick="addV()"
+                        style="background:#000; color:#fff; border:none; padding:10px 15px; border-radius:6px; cursor:pointer;"><i
+                            class="fas fa-plus"></i></button>
+                </div>
 
-  <input type="text" id="promoCodeInput" placeholder="Promo Code">
-  
-  <select id="discountType">
-    <option value="percentage">Percentage %</option>
-    <option value="fixed">Fixed Amount</option>
-  </select>
+                <div style="margin-top:20px;">
+                    <label style="font-weight:bold; font-size:13px; margin-bottom:10px; display:block;">SELECT
+                        CATEGORIES</label>
+                    <div class="category-selector">
+                        <label class="cat-tag"><input type="checkbox" name="categories"
+                                value="tops"><span>Tops</span></label>
+                        <label class="cat-tag"><input type="checkbox" name="categories"
+                                value="bottoms"><span>Bottoms</span></label>
+                        <label class="cat-tag"><input type="checkbox" name="categories" value="sets"><span>Full
+                                Sets</span></label>
+                        <label class="cat-tag"><input type="checkbox" name="categories" value="new-arrival"><span>New
+                                Arrival</span></label>
+                    </div>
+                </div>
 
-  <input type="number" id="discountValue" placeholder="Discount Value">
+                <div id="variantList"></div>
+                <textarea id="productDescription" rows="3" placeholder="وصف المنتج، الخامة..."
+                    style="margin-top:15px;"></textarea>
 
-  <button onclick="addPromo()">Add Promo</button>
+                <label style="font-size: 13px; font-weight: bold; margin-bottom: 10px; display: block;">صور المنتج (حتى
+                    6 صور):</label>
+                <div class="photo-grid">
+                    <input type="file" class="photo-input" id="f1"> <input type="file" class="photo-input" id="f2">
+                    <input type="file" class="photo-input" id="f3"> <input type="file" class="photo-input" id="f4">
+                    <input type="file" class="photo-input" id="f5"> <input type="file" class="photo-input" id="f6">
+                </div>
+                <button class="submit-btn" id="saveBtn" onclick="save()">نشر المنتج الآن</button>
+            </div>
+        </section>
 
-  <ul id="promoList" style="margin-top:20px;"></ul>
-</section>
-</main>
+        <section id="inv" class="section">
+            <h3>إدارة المخزن والأسعار</h3>
+            <div id="invContainer"></div>
+        </section>
 
-<script>
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('open');
-    }
+        <section id="ord" class="section">
+            <h3>الطلبات الواردة</h3>
+            <div id="ordContainer"></div>
+        </section>
 
-    window.tab = (id, el) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active'); 
-        el.classList.add('active');
-        if(window.innerWidth <= 768) toggleSidebar();
-    };
-</script>
+        <section id="reviewsAdmin" class="section">
+            <div class="header-flex">
+                <h2>إدارة تقييمات العملاء ⭐</h2>
+            </div>
+            <div id="adminReviewsList" class="admin-grid">
+            </div>
+        </section>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, orderBy, where, getDocs, doc, addDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        <section id="promo" class="section">
+            <h2>إدارة البروموكود</h2>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
-        authDomain: "zorin-store-2026.firebaseapp.com",
-        projectId: "zorin-store-2026",
-        storageBucket: "zorin-store-2026.firebasestorage.app",
-        messagingSenderId: "272032162345",
-        appId: "1:272032162345:web:b09eab937b053373ad7238"
-    };
+            <input type="text" id="promoCodeInput" placeholder="Promo Code">
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const ADMIN_EMAIL = "zorinstore2026@gmail.com";
+            <select id="discountType">
+                <option value="percentage">Percentage %</option>
+                <option value="fixed">Fixed Amount</option>
+            </select>
 
-    let originalPrice = 0;
-let finalPrice = 0;
-let appliedPromoCode = null;
+            <input type="number" id="discountValue" placeholder="Discount Value">
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        if (user.email === ADMIN_EMAIL) {
-            console.log("Welcome Admin");
-            document.body.style.opacity = "1";
-        } else {
-            window.location.href = 'index.html';
-        }
-    } else {
-        window.location.href = 'login.html';
-    }
-});
+            <button onclick="addPromo()">Add Promo</button>
 
-    window.logout = () => { signOut(auth).then(() => window.location.href = 'login.html'); };
+            <ul id="promoList" style="margin-top:20px;"></ul>
+        </section>
+    </main>
 
-    let variants = [];
-    window.addV = () => {
-        const color = document.getElementById('vColor').value;
-        if(!color) return alert("اكتب اللون");
-        variants.push({
-            color: color,
-            stock: {
-                M: parseInt(document.getElementById('vM').value) || 0,
-                L: parseInt(document.getElementById('vL').value) || 0,
-                XL: parseInt(document.getElementById('vXL').value) || 0,
-                XXL: parseInt(document.getElementById('vXXL').value) || 0
-            }
-        });
-        renderV();
-        document.getElementById('vColor').value = "";
-    };
-
-    function renderV() {
-        document.getElementById('variantList').innerHTML = variants.map((v, i) => `
-            <div class="variant-item">
-                <div class="variant-info"><b>${v.color}</b> | M:${v.stock.M} L:${v.stock.L} XL:${v.stock.XL} XXL:${v.stock.XXL}</div>
-                <i class="fas fa-trash" onclick="variants.splice(${i},1);renderV()" style="color:red; cursor:pointer;"></i>
-            </div>`).join('');
-    }
-
-  window.save = async () => {
-    const btn = document.getElementById('saveBtn');
-    const pName = document.getElementById('pName').value;
-    const pPrice = document.getElementById('pPrice').value;
-    const pDescription = document.getElementById('productDescription').value; 
-
-    if(!pName || !pPrice || variants.length === 0) return alert("أكمل بيانات المنتج");
-    
-    btn.innerText = "جاري الرفع..."; btn.disabled = true;
-    
-    try {
-        const urls = [];
-        for(let i=1; i<=6; i++){
-            const f = document.getElementById('f'+i).files[0];
-            if(f){
-                const fd = new FormData(); fd.append('file', f); fd.append('upload_preset', 'dmx8trp7g');
-                const r = await fetch(`https://api.cloudinary.com/v1_1/dmx8trp7g/image/upload`, {method:'POST', body:fd});
-                const d = await r.json(); urls.push(d.secure_url);
-            }
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
         }
 
-        const selectedCategories = [];
-        document.querySelectorAll('input[name="categories"]:checked').forEach(cb => selectedCategories.push(cb.value));
+        window.tab = (id, el) => {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+            if (window.innerWidth <= 768) toggleSidebar();
+        };
+    </script>
 
-        await addDoc(collection(db, "products"), {
-            name: pName, 
-            price: Number(pPrice), 
-            salePrice: Number(pPrice),
-            pDesc: pDescription, 
-            categories: selectedCategories, 
-            variants: variants, 
-            image: urls[0], 
-            allImages: urls, 
-            createdAt: new Date()
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, where, getDocs, doc, addDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
+            authDomain: "zorin-store-2026.firebaseapp.com",
+            projectId: "zorin-store-2026",
+            storageBucket: "zorin-store-2026.firebasestorage.app",
+            messagingSenderId: "272032162345",
+            appId: "1:272032162345:web:b09eab937b053373ad7238"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const ADMIN_EMAIL = "zorinstore2026@gmail.com";
+
+        let originalPrice = 0;
+        let finalPrice = 0;
+        let appliedPromoCode = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (user.email === ADMIN_EMAIL) {
+                    console.log("Welcome Admin");
+                    document.body.style.opacity = "1";
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
         });
 
-        alert("تم النشر بنجاح!"); 
-        location.reload();
-    } catch (err) {
-        console.error(err);
-        alert("حدث خطأ أثناء الرفع");
-        btn.innerText = "نشر المنتج الآن"; btn.disabled = false;
-    }
+        window.logout = () => { signOut(auth).then(() => window.location.href = 'login.html'); };
+
+        let variants = [];
+        window.addV = () => {
+            const color = document.getElementById('vColor').value;
+            if (!color) return alert("اكتب اللون");
+            variants.push({
+                color: color,
+                stock: {
+                    S: parseInt(document.getElementById('vS').value) || 0,
+                    M: parseInt(document.getElementById('vM').value) || 0,
+                    L: parseInt(document.getElementById('vL').value) || 0,
+                    XL: parseInt(document.getElementById('vXL').value) || 0,
+                    XXL: parseInt(document.getElementById('vXXL').value) || 0
+                }
+            });
+            renderV();
+            document.getElementById('vColor').value = "";
+    document.getElementById('vS').value = "0";
+    document.getElementById('vM').value = "0";
+    document.getElementById('vL').value = "0";
+    document.getElementById('vXL').value = "0";
+    document.getElementById('vXXL').value = "0";
 };
 
-    onSnapshot(query(collection(db, "products"), orderBy("createdAt", "desc")), (snap) => {
-        const inv = document.getElementById('invContainer');
-        if(!inv) return; inv.innerHTML = "";
-        snap.forEach(d => {
-            const p = d.data(); const pid = d.id;
-            let vHtml = "";
-            (p.variants || []).forEach((v, idx) => {
-                vHtml += `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-top:5px;">
+        function renderV() {
+            document.getElementById('variantList').innerHTML = variants.map((v, i) => `
+            <div class="variant-item">
+                <div class="variant-info"><b>${v.color}</b> | S:${v.stock.S} M:${v.stock.M} L:${v.stock.L} XL:${v.stock.XL} XXL:${v.stock.XXL}</div>
+                <i class="fas fa-trash" onclick="variants.splice(${i},1);renderV()" style="color:red; cursor:pointer;"></i>
+            </div>`).join('');
+        }
+
+        window.save = async () => {
+            const btn = document.getElementById('saveBtn');
+            const pName = document.getElementById('pName').value;
+            const pPrice = document.getElementById('pPrice').value;
+            const pDescription = document.getElementById('productDescription').value;
+
+            if (!pName || !pPrice || variants.length === 0) return alert("أكمل بيانات المنتج");
+
+            btn.innerText = "جاري الرفع..."; btn.disabled = true;
+
+            try {
+                const urls = [];
+                for (let i = 1; i <= 6; i++) {
+                    const f = document.getElementById('f' + i).files[0];
+                    if (f) {
+                        const fd = new FormData(); fd.append('file', f); fd.append('upload_preset', 'dmx8trp7g');
+                        const r = await fetch(`https://api.cloudinary.com/v1_1/dmx8trp7g/image/upload`, { method: 'POST', body: fd });
+                        const d = await r.json(); urls.push(d.secure_url);
+                    }
+                }
+
+                const selectedCategories = [];
+                document.querySelectorAll('input[name="categories"]:checked').forEach(cb => selectedCategories.push(cb.value));
+
+                await addDoc(collection(db, "products"), {
+                    name: pName,
+                    price: Number(pPrice),
+                    salePrice: Number(pPrice),
+                    pDesc: pDescription,
+                    categories: selectedCategories,
+                    variants: variants,
+                    image: urls[0],
+                    allImages: urls,
+                    createdAt: new Date()
+                });
+
+                alert("تم النشر بنجاح!");
+                location.reload();
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء الرفع");
+                btn.innerText = "نشر المنتج الآن"; btn.disabled = false;
+            }
+        };
+
+        onSnapshot(query(collection(db, "products"), orderBy("createdAt", "desc")), (snap) => {
+            const inv = document.getElementById('invContainer');
+            if (!inv) return; inv.innerHTML = "";
+            snap.forEach(d => {
+                const p = d.data(); const pid = d.id;
+                let vHtml = "";
+                (p.variants || []).forEach((v, idx) => {
+                    vHtml += `<div style="background:#f9f9f9; padding:10px; border-radius:8px; margin-top:5px;">
                     <div style="font-weight:bold; font-size:12px; margin-bottom:5px;">اللون: ${v.color}</div>
-                    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px; text-align:center;">
-                    ${['M','L','XL','XXL'].map(s => `
+                    <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:5px; text-align:center;">
+                    ${['S', 'M', 'L', 'XL', 'XXL'].map(s => `
                         <div>
                             <label style="font-size:9px; font-weight:bold; display:block; color:#888;">${s}</label>
                             <input type="number" value="${v.stock[s]}" class="stock-in-${pid}" data-v="${idx}" data-s="${s}" style="margin:0; text-align:center; padding:5px;">
                         </div>`).join('')}
                     </div></div>`;
-            });
-            inv.innerHTML += `<div class="glass-card" style="display:flex; flex-wrap:wrap; gap:15px; align-items:start;">
+                });
+                inv.innerHTML += `<div class="glass-card" style="display:flex; flex-wrap:wrap; gap:15px; align-items:start;">
                 <img src="${p.image}" style="width:70px; height:90px; object-fit:cover; border-radius:8px;">
                 <div style="flex:1; min-width:200px;">
                     <div style="display:flex; justify-content:space-between;"><b>${p.name}</b><i class="fas fa-trash" onclick="delP('${pid}')" style="color:red; cursor:pointer;"></i></div>
@@ -313,46 +546,59 @@ onAuthStateChanged(auth, (user) => {
                     ${vHtml}
                     <button onclick="saveChanges('${pid}')" style="width:100%; background:#000; color:#fff; border:none; padding:8px; border-radius:5px; margin-top:10px; cursor:pointer;">تحديث</button>
                 </div></div>`;
+            });
         });
-    });
 
-    window.saveChanges = async (pid) => {
-        const docRef = doc(db, "products", pid);
-        const snap = await getDoc(docRef); const data = snap.data();
-        document.querySelectorAll(`.stock-in-${pid}`).forEach(i => { data.variants[i.dataset.v].stock[i.dataset.s] = parseInt(i.value); });
-        await updateDoc(docRef, { price: Number(document.getElementById(`base-${pid}`).value), salePrice: Number(document.getElementById(`sale-${pid}`).value), variants: data.variants });
-        alert("تم التحديث ✅");
-    };
-
-    window.delP = async (id) => { if(confirm("حذف المنتج؟")) await deleteDoc(doc(db, "products", id)); };
-
-    onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
-    const ordContainer = document.getElementById('ordContainer');
-    if(!ordContainer) return;
-    ordContainer.innerHTML = "";
-
-    snap.forEach(d => {
-        const o = d.data(); 
-        const oid = d.id;
-
-        // حساب السعر قبل الخصم
-        let originalTotal = (o.items || []).reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
-
-        // حساب قيمة الخصم
-        let discountValue = 0;
-        if(o.promoUsed && o.promoType && o.promoValue){
-            if(o.promoType === "fixed"){
-                discountValue = o.promoValue;
-            } else if(o.promoType === "percentage"){
-                discountValue = Math.round(originalTotal * (o.promoValue / 100));
-            }
+        window.saveChanges = async (pid) => {
+    const docRef = doc(db, "products", pid);
+    const snap = await getDoc(docRef); 
+    const data = snap.data();
+    
+    document.querySelectorAll(`.stock-in-${pid}`).forEach(i => { 
+        // التأكد من أن كائن المخزن (stock) يحتوي على المقاس S إذا لم يكن موجوداً مسبقاً في المستند القديم
+        if (!data.variants[i.dataset.v].stock) {
+            data.variants[i.dataset.v].stock = {};
         }
+        data.variants[i.dataset.v].stock[i.dataset.s] = parseInt(i.value) || 0; 
+    });
+    
+    await updateDoc(docRef, { 
+        price: Number(document.getElementById(`base-${pid}`).value), 
+        salePrice: Number(document.getElementById(`sale-${pid}`).value), 
+        variants: data.variants 
+    });
+    alert("تم التحديث ✅");
+};
 
-        // السعر النهائي بعد الخصم
-        let totalAfterDiscount = originalTotal - discountValue;
+        window.delP = async (id) => { if (confirm("حذف المنتج؟")) await deleteDoc(doc(db, "products", id)); };
 
-        // HTML المنتجات
-        let itemsHtml = (o.items || []).map(item => `
+        onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
+            const ordContainer = document.getElementById('ordContainer');
+            if (!ordContainer) return;
+            ordContainer.innerHTML = "";
+
+            snap.forEach(d => {
+                const o = d.data();
+                const oid = d.id;
+
+                // حساب السعر قبل الخصم
+                let originalTotal = (o.items || []).reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+
+                // حساب قيمة الخصم
+                let discountValue = 0;
+                if (o.promoUsed && o.promoType && o.promoValue) {
+                    if (o.promoType === "fixed") {
+                        discountValue = o.promoValue;
+                    } else if (o.promoType === "percentage") {
+                        discountValue = Math.round(originalTotal * (o.promoValue / 100));
+                    }
+                }
+
+                // السعر النهائي بعد الخصم
+                let totalAfterDiscount = originalTotal - discountValue;
+
+                // HTML المنتجات
+                let itemsHtml = (o.items || []).map(item => `
             <div style="display:flex; gap:10px; font-size:13px; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:8px;">
                 <img src="${item.image}" style="width:40px; height:55px; object-fit:cover; border-radius:4px;">
                 <div style="flex:1;">
@@ -362,17 +608,17 @@ onAuthStateChanged(auth, (user) => {
                 </div>
             </div>`).join('');
 
-        // HTML الخصم والسعر النهائي
-        let discountHtml = o.promoUsed ? `
+                // HTML الخصم والسعر النهائي
+                let discountHtml = o.promoUsed ? `
             <div style="text-decoration:line-through; color:#888;">السعر قبل الخصم: ${originalTotal.toFixed(2)} EGP</div>
             <div style="color:red;">قيمة الخصم: ${discountValue.toFixed(2)} EGP</div>
             <div>كود الخصم المستخدم: <b>${o.promoUsed}</b></div>
         ` : `<div>السعر قبل الخصم: ${originalTotal.toFixed(2)} EGP</div>`;
 
-        ordContainer.innerHTML += `
+                ordContainer.innerHTML += `
             <div class="glass-card" style="border-right:5px solid #000; margin-bottom:15px; padding:10px;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <small style="color:#888;">#${oid.substring(0,6)}</small>
+                    <small style="color:#888;">#${oid.substring(0, 6)}</small>
                     <span style="background:#000; color:#fff; padding:2px 10px; border-radius:20px; font-size:11px;">
                         ${o.status === 'new' ? 'جديد' : 'مكتمل'}
                     </span>
@@ -400,27 +646,27 @@ onAuthStateChanged(auth, (user) => {
                     </button>
                 </div>
             </div>`;
-    });
-});
+            });
+        });
 
 
 
-    window.delOrder = async (id) => { if(confirm("حذف الطلب نهائياً؟")) await deleteDoc(doc(db, "orders", id)); };
-function loadReviewsForAdmin() {
-    const container = document.getElementById('adminReviewsList');
-    if (!container) return;
+        window.delOrder = async (id) => { if (confirm("حذف الطلب نهائياً؟")) await deleteDoc(doc(db, "orders", id)); };
+        function loadReviewsForAdmin() {
+            const container = document.getElementById('adminReviewsList');
+            if (!container) return;
 
-    const q = query(collection(db, "reviews"), orderBy("createdAt", "desc")); 
-    
-    onSnapshot(q, (snap) => {
-        container.innerHTML = "";
-        if (snap.empty) {
-            container.innerHTML = "<p style='text-align:center; color:#888;'>لا توجد تقييمات حالياً</p>";
-            return;
-        }
-        snap.forEach(d => {
-            const r = d.data();
-            container.innerHTML += `
+            const q = query(collection(db, "reviews"), orderBy("createdAt", "desc"));
+
+            onSnapshot(q, (snap) => {
+                container.innerHTML = "";
+                if (snap.empty) {
+                    container.innerHTML = "<p style='text-align:center; color:#888;'>لا توجد تقييمات حالياً</p>";
+                    return;
+                }
+                snap.forEach(d => {
+                    const r = d.data();
+                    container.innerHTML += `
                 <div class="glass-card" style="padding:15px; margin-bottom:15px; border-right: 5px solid #ff4757; position:relative;">
                     <div style="display:flex; justify-content:space-between; align-items:start;">
                         <div>
@@ -435,48 +681,48 @@ function loadReviewsForAdmin() {
                     <small style="color:#bbb; font-size:11px;">المنتج ID: ${r.productId}</small>
                 </div>
             `;
-        });
-    }, (error) => {
-        console.error("Error fetching reviews: ", error);
-        if(error.message.includes("index")) {
-            container.innerHTML = "<p style='color:red;'>محتاج تفعيل الـ Index من الرابط في الـ Console</p>";
-        }
-    });
-}
-
-window.deleteReview = async (id) => {
-    if (confirm("هل أنت متأكد من حذف هذا التقييم؟")) {
-        try {
-            await deleteDoc(doc(db, "reviews", id));
-            alert("تم الحذف ✅");
-        } catch (e) {
-            alert("فشل الحذف: تأكد من صلاحيات الأدمن");
-        }
-    }
-};
-
-
-
-// تعريف مجموعة البروموكود
-const promoCollection = collection(db, "promoCodes");
-
-// دالة عرض البروموكودات
-function renderPromos() {
-    const list = document.getElementById("promoList");
-    if (!list) return;
-
-    const q = query(promoCollection, orderBy("createdAt", "desc"));
-    onSnapshot(q, (snap) => {
-        list.innerHTML = "";
-        if (snap.empty) {
-            list.innerHTML = "<li style='color:#888;'>لا توجد بروموكودات حالياً</li>";
-            return;
+                });
+            }, (error) => {
+                console.error("Error fetching reviews: ", error);
+                if (error.message.includes("index")) {
+                    container.innerHTML = "<p style='color:red;'>محتاج تفعيل الـ Index من الرابط في الـ Console</p>";
+                }
+            });
         }
 
-        snap.forEach(docSnap => {
-            const promo = docSnap.data();
-            const id = docSnap.id;
-            list.innerHTML += `
+        window.deleteReview = async (id) => {
+            if (confirm("هل أنت متأكد من حذف هذا التقييم؟")) {
+                try {
+                    await deleteDoc(doc(db, "reviews", id));
+                    alert("تم الحذف ✅");
+                } catch (e) {
+                    alert("فشل الحذف: تأكد من صلاحيات الأدمن");
+                }
+            }
+        };
+
+
+
+        // تعريف مجموعة البروموكود
+        const promoCollection = collection(db, "promoCodes");
+
+        // دالة عرض البروموكودات
+        function renderPromos() {
+            const list = document.getElementById("promoList");
+            if (!list) return;
+
+            const q = query(promoCollection, orderBy("createdAt", "desc"));
+            onSnapshot(q, (snap) => {
+                list.innerHTML = "";
+                if (snap.empty) {
+                    list.innerHTML = "<li style='color:#888;'>لا توجد بروموكودات حالياً</li>";
+                    return;
+                }
+
+                snap.forEach(docSnap => {
+                    const promo = docSnap.data();
+                    const id = docSnap.id;
+                    list.innerHTML += `
                 <li style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
                     <span><b>${promo.code}</b> - ${promo.discountType === "percentage" ? promo.discountValue + "%" : promo.discountValue + " EGP"}</span>
                     <button onclick="deletePromo('${id}')" 
@@ -485,66 +731,66 @@ function renderPromos() {
                     </button>
                 </li>
             `;
-        });
-    });
-}
-
-// دالة إضافة بروموكود جديد
-window.addPromo = async function () {
-    const code = document.getElementById("promoCodeInput").value.trim().toUpperCase();
-    const type = document.getElementById("discountType").value;
-    const value = parseFloat(document.getElementById("discountValue").value);
-
-    if (!code || !value) {
-        alert("اكمل كل البيانات");
-        return;
-    }
-
-    try {
-        // تحقق من وجود الكود مسبقًا
-        const q = query(promoCollection, where("code", "==", code));
-        const snap = await getDocs(q);
-        if (!snap.empty) {
-            alert("هذا الكود موجود بالفعل!");
-            return;
+                });
+            });
         }
 
-        // إضافة الكود مع createdAt
-        await addDoc(promoCollection, {
-            code: code,
-            discountType: type,
-            discountValue: value,
-            createdAt: new Date()
-        });
+        // دالة إضافة بروموكود جديد
+        window.addPromo = async function () {
+            const code = document.getElementById("promoCodeInput").value.trim().toUpperCase();
+            const type = document.getElementById("discountType").value;
+            const value = parseFloat(document.getElementById("discountValue").value);
 
-        // مسح الحقول بعد الإضافة
-        document.getElementById("promoCodeInput").value = "";
-        document.getElementById("discountValue").value = "";
+            if (!code || !value) {
+                alert("اكمل كل البيانات");
+                return;
+            }
 
-        alert("تمت الإضافة ✅");
-    } catch (err) {
-        console.error(err);
-        alert("حدث خطأ أثناء الإضافة");
-    }
-};
+            try {
+                // تحقق من وجود الكود مسبقًا
+                const q = query(promoCollection, where("code", "==", code));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    alert("هذا الكود موجود بالفعل!");
+                    return;
+                }
 
-// دالة حذف بروموكود
-window.deletePromo = async function (id) {
-    if (confirm("هل تريد حذف البروموكود؟")) {
-        try {
-            await deleteDoc(doc(db, "promoCodes", id));
-        } catch (err) {
-            console.error(err);
-            alert("فشل الحذف");
-        }
-    }
-};
+                // إضافة الكود مع createdAt
+                await addDoc(promoCollection, {
+                    code: code,
+                    discountType: type,
+                    discountValue: value,
+                    createdAt: new Date()
+                });
 
-// عرض البروموكود فور تحميل الصفحة
-renderPromos();
+                // مسح الحقول بعد الإضافة
+                document.getElementById("promoCodeInput").value = "";
+                document.getElementById("discountValue").value = "";
 
-loadReviewsForAdmin();
-</script>
+                alert("تمت الإضافة ✅");
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ أثناء الإضافة");
+            }
+        };
+
+        // دالة حذف بروموكود
+        window.deletePromo = async function (id) {
+            if (confirm("هل تريد حذف البروموكود؟")) {
+                try {
+                    await deleteDoc(doc(db, "promoCodes", id));
+                } catch (err) {
+                    console.error(err);
+                    alert("فشل الحذف");
+                }
+            }
+        };
+
+        // عرض البروموكود فور تحميل الصفحة
+        renderPromos();
+
+        loadReviewsForAdmin();
+    </script>
 </body>
-</html>
 
+</html>
