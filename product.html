@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 
@@ -382,7 +381,7 @@
             width: 100%;
             border-radius: 12px;
             object-fit: cover;
-            aspect-ratio: 3/4;
+            aspect-ratio: 9/16;
             background: var(--grey);
         }
 
@@ -618,6 +617,12 @@
             .container {
                 flex-direction: column;
             }
+            #productsDisplay {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        padding: 5px !important;
+    }
         }
 
         #navUserName {
@@ -628,69 +633,77 @@
         .nav-icons {
             gap: 15px;
         }
+
         .swiper {
-    width: 100%;
-    max-width: 500px; /* أو المقاس اللي يريحك */
-    height: auto;
-    margin-bottom: 20px;
-}
-.swiper-button-next, .swiper-button-prev {
-    color: #000 !important; /* لون الأسهم أسود */
-    transform: scale(0.6); /* تصغير حجم الأسهم */
-}
-.related-section {
-  margin-top: 60px;
-}
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 9 / 16 !important;
+            /* 👈 غير المقاس هنا */
+            height: auto;
+            margin-bottom: 20px;
+        }
 
-.related-section h2 {
-  font-size: 20px;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #000 !important;
+            /* لون الأسهم أسود */
+            transform: scale(0.6);
+            /* تصغير حجم الأسهم */
+        }
 
-.related-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-}
+        .related-section {
+            margin-top: 60px;
+        }
 
-.related-card {
-  border: 1px solid #eee;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: 0.3s;
-}
+        .related-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
 
-.related-card:hover {
-  transform: translateY(-5px);
-}
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
 
-.related-card img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: contain;
-    background: #f5f5f5; /* optional عشان الفراغ */
-}
+        .related-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .related-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .related-card img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            background: #f5f5f5;
+            /* optional عشان الفراغ */
+        }
 
 
-.related-card .info {
-  padding: 12px;
-}
+        .related-card .info {
+            padding: 12px;
+        }
 
-.related-card .info h4 {
-  font-size: 14px;
-  margin: 0 0 6px;
-}
+        .related-card .info h4 {
+            font-size: 14px;
+            margin: 0 0 6px;
+        }
 
-.related-card .info span {
-  font-weight: bold;
-}
-
+        .related-card .info span {
+            font-weight: bold;
+        }
     </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </head>
 
 <body>
@@ -783,49 +796,49 @@
     <div id="overlay" class="overlay" onclick="closeAll()"></div>
 
     <div class="swiper mySwiper">
-    <div class="swiper-wrapper" id="swiperWrapper">
+        <div class="swiper-wrapper" id="swiperWrapper">
         </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-pagination"></div>
-</div>
-        <div class="product-info">
-            <div class="brand-name" translate="no">ZORIN STORE</div>
-            <h1 class="product-title" id="productName">...</h1>
-            <div class="price-wrapper">
-                <span class="current-price" id="currentPrice">0 EGP</span>
-                <span class="old-price" id="oldPrice"></span>
-            </div>
-
-            <div class="options">
-                <span class="option-label">اللون</span>
-                <div class="selector-grid" id="colorSelector"></div>
-
-                <span class="option-label">المقاس</span>
-                <div class="selector-grid" id="sizeSelector"></div>
-
-                <span class="option-label">الكمية <small id="stockNotice"
-                        style="color: #888; font-weight: normal;"></small></span>
-                <div class="qty-box">
-                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
-                    <span id="qtyVal" style="font-weight: bold;">1</span>
-                    <button class="qty-btn" onclick="changeQty(1)">+</button>
-                </div>
-            </div>
-            <div class="product-description-container" style="margin: 20px 0;">
-                <h4 style="font-size: 16px; margin-bottom: 8px; font-family: 'Syncopate', sans-serif;">DESCRIPTION</h4>
-                <p id="pDescriptionText" class="pDescriptionText">
-                </p>
-            </div>
-            <div id="productDescContent" style="white-space: pre-line;">
-    جاري تحميل الوصف...
-</div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+    <div class="product-info">
+        <div class="brand-name" translate="no">ZORIN STORE</div>
+        <h1 class="product-title" id="productName">...</h1>
+        <div class="price-wrapper">
+            <span class="current-price" id="currentPrice">0 EGP</span>
+            <span class="old-price" id="oldPrice"></span>
         </div>
-        <div class="actions">
-            <button class="btn-black" onclick="addToCart(true)">إضافة إلى العربة</button>
-            <button class="btn-outline" onclick="buyNow()">شراء الآن</button>
+
+        <div class="options">
+            <span class="option-label">اللون</span>
+            <div class="selector-grid" id="colorSelector"></div>
+
+            <span class="option-label">المقاس</span>
+            <div class="selector-grid" id="sizeSelector"></div>
+
+            <span class="option-label">الكمية <small id="stockNotice"
+                    style="color: #888; font-weight: normal;"></small></span>
+            <div class="qty-box">
+                <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                <span id="qtyVal" style="font-weight: bold;">1</span>
+                <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
         </div>
-        <div class="description" id="productDesc" style="margin-top:30px; font-size:0.9rem; color:#666;"></div>
+        <div class="product-description-container" style="margin: 20px 0;">
+            <h4 style="font-size: 16px; margin-bottom: 8px; font-family: 'Syncopate', sans-serif;">DESCRIPTION</h4>
+            <p id="pDescriptionText" class="pDescriptionText">
+            </p>
+        </div>
+        <div id="productDescContent" style="white-space: pre-line;">
+            جاري تحميل الوصف...
+        </div>
+    </div>
+    <div class="actions">
+        <button class="btn-black" onclick="addToCart(true)">إضافة إلى العربة</button>
+        <button class="btn-outline" onclick="buyNow()">شراء الآن</button>
+    </div>
+    <div class="description" id="productDesc" style="margin-top:30px; font-size:0.9rem; color:#666;"></div>
     </div>
     </div>
 
@@ -840,198 +853,206 @@
         <button class="btn-black" style="width:100%" onclick="openCheckout()">إتمام الطلب</button>
     </div>
 
-   <div id="checkoutModal">
-    <h3>بيانات الشحن</h3>
-    <input type="text" id="custName" placeholder="الاسم بالكامل">
-    <input type="tel" id="custPhone" placeholder="رقم الموبايل (واتساب + مكالمات)">
-    <input type="text" id="custAddress" placeholder="العنوان بالتفصيل (المحافظة/المنطقة/الشارع)">
+    <div id="checkoutModal">
+        <h3>بيانات الشحن</h3>
+        <input type="text" id="custName" placeholder="الاسم بالكامل">
+        <input type="tel" id="custPhone" placeholder="رقم الموبايل (واتساب + مكالمات)">
+        <input type="text" id="custAddress" placeholder="العنوان بالتفصيل (المحافظة/المنطقة/الشارع)">
 
-    <!-- ===== حقل البروموكود ===== -->
-    <div style="margin: 15px 0;">
-        <label style="display:block; font-size:14px; color:#666; margin-bottom:5px;">كود الخصم</label>
-        <input type="text" id="checkoutPromoInput" placeholder="ادخل كود الخصم إن وجد" 
-            style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; font-family:'Cairo'; margin-bottom:5px;">
-        <button id="checkoutApplyPromo" style="padding:8px 12px; background:#000; color:#fff; border:none; border-radius:6px; cursor:pointer;">تطبيق</button>
-        <div id="checkoutPromoMsg" style="font-size:13px; color:green; margin-top:3px;"></div>
-    </div>
-
-    <!-- السعر النهائي -->
-    <div style="font-weight:bold; font-size:16px; margin-bottom:15px;">
-        السعر الإجمالي: <span id="checkoutTotal">0 EGP</span>
-    </div>
-
-    <button class="btn-black" style="width:100%" id="confirmBtn" onclick="confirmOrder()">تأكيد الطلب</button>
-    <button class="btn-outline" style="width:100%; margin-top:10px; border:none;" onclick="closeCheckout()">إلغاء</button>
-</div>
-
-<div id="reviewsSection" style="margin-top: 40px; padding: 20px; border-top: 1px solid #eee;">
-    <h3>تقييمات العملاء ⭐</h3>
-    <div id="reviewsList">
-        <p style="color: #999;">لا توجد تقييمات بعد. كن أول من يقيم المنتج!</p>
-    </div>
-
-   <div id="addReviewBox" style="margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
-    <h4>أضف تقييمك</h4>
-    
-    <div id="visitorNameBox" style="margin-bottom: 10px;">
-        <input type="text" id="visitorName" placeholder="اكتب اسمك هنا..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Cairo';">
-    </div>
-
-    
-</div>
-       <div style="margin-bottom: 15px;">
-        <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px;">كيف كانت تجربتك؟</label>
-        <div id="starRating" style="font-size: 28px; color: #ccc; display: flex; gap: 8px; direction: ltr;">
-            <span class="star" data-value="1" style="cursor: pointer; transition: 0.3s;">★</span>
-            <span class="star" data-value="2" style="cursor: pointer; transition: 0.3s;">★</span>
-            <span class="star" data-value="3" style="cursor: pointer; transition: 0.3s;">★</span>
-            <span class="star" data-value="4" style="cursor: pointer; transition: 0.3s;">★</span>
-            <span class="star" data-value="5" style="cursor: pointer; transition: 0.3s;">★</span>
+        <!-- ===== حقل البروموكود ===== -->
+        <div style="margin: 15px 0;">
+            <label style="display:block; font-size:14px; color:#666; margin-bottom:5px;">كود الخصم</label>
+            <input type="text" id="checkoutPromoInput" placeholder="ادخل كود الخصم إن وجد"
+                style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; font-family:'Cairo'; margin-bottom:5px;">
+            <button id="checkoutApplyPromo"
+                style="padding:8px 12px; background:#000; color:#fff; border:none; border-radius:6px; cursor:pointer;">تطبيق</button>
+            <div id="checkoutPromoMsg" style="font-size:13px; color:green; margin-top:3px;"></div>
         </div>
-        <input type="hidden" id="selectedRating" value="5">
+
+        <!-- السعر النهائي -->
+        <div style="font-weight:bold; font-size:16px; margin-bottom:15px;">
+            السعر الإجمالي: <span id="checkoutTotal">0 EGP</span>
+        </div>
+
+        <button class="btn-black" style="width:100%" id="confirmBtn" onclick="confirmOrder()">تأكيد الطلب</button>
+        <button class="btn-outline" style="width:100%; margin-top:10px; border:none;"
+            onclick="closeCheckout()">إلغاء</button>
     </div>
 
-    <div style="margin-bottom: 20px;">
-        <textarea id="rateComm" placeholder="اكتب رأيك في الخامة والمقاس بكل صراحة..." rows="4" style="width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; background: #fcfcfc; font-family: 'Cairo'; outline: none; resize: none;"></textarea>
-    </div>
+    <div id="reviewsSection" style="margin-top: 40px; padding: 20px; border-top: 1px solid #eee;">
+        <h3>تقييمات العملاء ⭐</h3>
+        <div id="reviewsList">
+            <p style="color: #999;">لا توجد تقييمات بعد. كن أول من يقيم المنتج!</p>
+        </div>
 
-    <button onclick="sendReview()" id="btnRev" style="width: 100%; background: #000; color: #fff; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s;">
-        نشر التقييم الآن
-    </button>
-</div>
-</div>
-<section class="related-section">
-  <h2>منتجات قد تعجبك</h2>
-<div id="relatedProductsGrid" class="related-grid"></div>
+        <div id="addReviewBox" style="margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
+            <h4>أضف تقييمك</h4>
 
-    <footer>
-        <div class="footer-top">
-            <div class="footer-about">
-                <h3>ABOUT ZORIN</h3>
-                <p>ZORIN is a modern clothing brand built on simplicity, quality, and purpose. We believe that style is
-                    more than what you wear—it’s how you express confidence, strength, and identity.<br><br>
-                    Every ZORIN piece is carefully crafted to deliver comfort and a clean, timeless look.<br>
-                    <b>Don’t Lose Hope.</b>
-                </p>
-                <div class="social-box">
-                    <a href="https://www.instagram.com/zorin_streetwear_brand?igsh=MXhpaDBhbXdpb2pzaA%3D%3D&utm_source=qr"
-                        target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@zorin_streetwear_?_r=1&_t=ZS-92tyxxZrQNo" target="_blank"><i
-                            class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/201558817664" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                </div>
+            <div id="visitorNameBox" style="margin-bottom: 10px;">
+                <input type="text" id="visitorName" placeholder="اكتب اسمك هنا..."
+                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: 'Cairo';">
             </div>
 
-            <div class="accordion-container">
-                <div class="acc-item">
-                    <button class="acc-btn" onclick="toggleAcc(this)">Privacy Policy <i
-                            class="fas fa-plus"></i></button>
-                    <div class="acc-content">
-                        <p>At ZORIN, your privacy is important to us. We collect only the information necessary to
-                            process your orders and improve your experience.<br><br>
-                            Your personal data is kept secure and will never be shared with third parties.</p>
+
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px;">كيف كانت تجربتك؟</label>
+            <div id="starRating" style="font-size: 28px; color: #ccc; display: flex; gap: 8px; direction: ltr;">
+                <span class="star" data-value="1" style="cursor: pointer; transition: 0.3s;">★</span>
+                <span class="star" data-value="2" style="cursor: pointer; transition: 0.3s;">★</span>
+                <span class="star" data-value="3" style="cursor: pointer; transition: 0.3s;">★</span>
+                <span class="star" data-value="4" style="cursor: pointer; transition: 0.3s;">★</span>
+                <span class="star" data-value="5" style="cursor: pointer; transition: 0.3s;">★</span>
+            </div>
+            <input type="hidden" id="selectedRating" value="5">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <textarea id="rateComm" placeholder="اكتب رأيك في الخامة والمقاس بكل صراحة..." rows="4"
+                style="width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; background: #fcfcfc; font-family: 'Cairo'; outline: none; resize: none;"></textarea>
+        </div>
+
+        <button onclick="sendReview()" id="btnRev"
+            style="width: 100%; background: #000; color: #fff; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s;">
+            نشر التقييم الآن
+        </button>
+    </div>
+    </div>
+    <section class="related-section">
+        <h2>منتجات قد تعجبك</h2>
+        <div id="relatedProductsGrid" class="related-grid"></div>
+
+        <footer>
+            <div class="footer-top">
+                <div class="footer-about">
+                    <h3>ABOUT ZORIN</h3>
+                    <p>ZORIN is a modern clothing brand built on simplicity, quality, and purpose. We believe that style
+                        is
+                        more than what you wear—it’s how you express confidence, strength, and identity.<br><br>
+                        Every ZORIN piece is carefully crafted to deliver comfort and a clean, timeless look.<br>
+                        <b>Don’t Lose Hope.</b>
+                    </p>
+                    <div class="social-box">
+                        <a href="https://www.instagram.com/zorin_streetwear_brand?igsh=MXhpaDBhbXdpb2pzaA%3D%3D&utm_source=qr"
+                            target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com/@zorin_streetwear_?_r=1&_t=ZS-92tyxxZrQNo" target="_blank"><i
+                                class="fab fa-tiktok"></i></a>
+                        <a href="https://wa.me/201558817664" target="_blank"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
-                <div class="acc-item">
-                    <button class="acc-btn" onclick="toggleAcc(this)">Contact Us <i class="fas fa-plus"></i></button>
-                    <div class="acc-content">
-                        <p><b>📞: 01558817664</b><br>
-                            Business Hours: Saturday – Thursday | 10:00 AM – 6:00 PM</p>
+
+                <div class="accordion-container">
+                    <div class="acc-item">
+                        <button class="acc-btn" onclick="toggleAcc(this)">Privacy Policy <i
+                                class="fas fa-plus"></i></button>
+                        <div class="acc-content">
+                            <p>At ZORIN, your privacy is important to us. We collect only the information necessary to
+                                process your orders and improve your experience.<br><br>
+                                Your personal data is kept secure and will never be shared with third parties.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="acc-item">
-                    <button class="acc-btn" onclick="toggleAcc(this)">Size Guide <i class="fas fa-plus"></i></button>
-                    <div class="acc-content">
-                        <p>Please refer to our size guide to find the perfect fit.</p>
+                    <div class="acc-item">
+                        <button class="acc-btn" onclick="toggleAcc(this)">Contact Us <i
+                                class="fas fa-plus"></i></button>
+                        <div class="acc-content">
+                            <p><b>📞: 01558817664</b><br>
+                                Business Hours: Saturday – Thursday | 10:00 AM – 6:00 PM</p>
+                        </div>
                     </div>
-                </div>
-                <div class="acc-item">
-                    <button class="acc-btn" onclick="toggleAcc(this)">FAQs <i class="fas fa-plus"></i></button>
-                    <div class="acc-content">
-                        <p>How long does shipping take? Orders are usually processed within 1–2 business days.</p>
+                    <div class="acc-item">
+                        <button class="acc-btn" onclick="toggleAcc(this)">Size Guide <i
+                                class="fas fa-plus"></i></button>
+                        <div class="acc-content">
+                            <p>Please refer to our size guide to find the perfect fit.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="acc-item">
-                    <button class="acc-btn" onclick="toggleAcc(this)">Shipping & Returns <i
-                            class="fas fa-plus"></i></button>
-                    <div class="acc-content">
-                        <p>Returns or exchanges are accepted within 48 hours of delivery.</p>
+                    <div class="acc-item">
+                        <button class="acc-btn" onclick="toggleAcc(this)">FAQs <i class="fas fa-plus"></i></button>
+                        <div class="acc-content">
+                            <p>How long does shipping take? Orders are usually processed within 1–2 business days.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="acc-item">
-                    <button class="acc-btn" onclick="toggleAcc(this)">Terms & Conditions <i
-                            class="fas fa-plus"></i></button>
-                    <div class="acc-content">
-                        <p>ZORIN reserves the right to update policies at any time.</p>
+                    <div class="acc-item">
+                        <button class="acc-btn" onclick="toggleAcc(this)">Shipping & Returns <i
+                                class="fas fa-plus"></i></button>
+                        <div class="acc-content">
+                            <p>Returns or exchanges are accepted within 48 hours of delivery.</p>
+                        </div>
+                    </div>
+                    <div class="acc-item">
+                        <button class="acc-btn" onclick="toggleAcc(this)">Terms & Conditions <i
+                                class="fas fa-plus"></i></button>
+                        <div class="acc-content">
+                            <p>ZORIN reserves the right to update policies at any time.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="copy">© 2026 ZORIN STORE. ALL RIGHTS RESERVED.</div>
-    </footer>
+            <div class="copy">© 2026 ZORIN STORE. ALL RIGHTS RESERVED.</div>
+        </footer>
 
 
-    <script type="module">
-    // 1. استيراد المكتبات المطلوبة من النسخة الجديدة
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, collection, onSnapshot, query, orderBy, where, getDocs, addDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        <script type="module">
+            // 1. استيراد المكتبات المطلوبة من النسخة الجديدة
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+            import { getFirestore, doc, collection, onSnapshot, query, orderBy, where, getDocs, addDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+            import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // 2. بيانات مشروع ZORIN STORE 2026 الجديد
-        const firebaseConfig = {
-            apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
-            authDomain: "zorin-store-2026.firebaseapp.com",
-            projectId: "zorin-store-2026",
-            storageBucket: "zorin-store-2026.firebasestorage.app",
-            messagingSenderId: "272032162345",
-            appId: "1:272032162345:web:b09eab937b053373ad7238"
-        };
+            // 2. بيانات مشروع ZORIN STORE 2026 الجديد
+            const firebaseConfig = {
+                apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
+                authDomain: "zorin-store-2026.firebaseapp.com",
+                projectId: "zorin-store-2026",
+                storageBucket: "zorin-store-2026.firebasestorage.app",
+                messagingSenderId: "272032162345",
+                appId: "1:272032162345:web:b09eab937b053373ad7238"
+            };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            const auth = getAuth(app);
 
-        let product = null;
-        let selectedColor = "";
-        let selectedSize = "";
-        let quantity = 1;
-        let maxAvailable = 0;
-        let tempItem = null;
-        let cart = JSON.parse(localStorage.getItem('zorin_cart')) || [];
-        let currentUser = null;
+            let product = null;
+            let selectedColor = "";
+            let selectedSize = "";
+            let quantity = 1;
+            let maxAvailable = 0;
+            let tempItem = null;
+            let cart = JSON.parse(localStorage.getItem('zorin_cart')) || [];
+            let currentUser = null;
 
-        // --- [1] نظام المستخدم والطلبات والـ Sidebars ---
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            const navName = document.getElementById('navUserName');
-            const visitorBox = document.getElementById('visitorNameBox');
-            if (user) {
-                const name = user.displayName || user.email.split('@')[0];
-                if(navName) navName.innerText = name;
-                document.getElementById('welcomeName').innerText = "Hi, " + name;
-                document.getElementById('userEmailTxt').innerText = user.email;
-                if(visitorBox) visitorBox.style.display = 'none';
-                loadUserOrders(user.email);
-            } else {
-                if(navName) navName.innerText = "Login";
-                if(visitorBox) visitorBox.style.display = 'block';
-            }
-        });
+            // --- [1] نظام المستخدم والطلبات والـ Sidebars ---
+            onAuthStateChanged(auth, async (user) => {
+                currentUser = user;
+                const navName = document.getElementById('navUserName');
+                const visitorBox = document.getElementById('visitorNameBox');
+                if (user) {
+                    const name = user.displayName || user.email.split('@')[0];
+                    if (navName) navName.innerText = name;
+                    document.getElementById('welcomeName').innerText = "Hi, " + name;
+                    document.getElementById('userEmailTxt').innerText = user.email;
+                    if (visitorBox) visitorBox.style.display = 'none';
+                    loadUserOrders(user.email);
+                } else {
+                    if (navName) navName.innerText = "Login";
+                    if (visitorBox) visitorBox.style.display = 'block';
+                }
+            });
 
-        async function loadUserOrders(userEmail) {
-            const list = document.getElementById('ordersList');
-            try {
-                const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-                const snap = await getDocs(q);
-                list.innerHTML = "";
-                let found = 0;
-                snap.forEach(doc => {
-                    const order = doc.data();
-                    const orderEmail = order.customer?.email || order.email;
-                    if (orderEmail === userEmail) {
-                        found++;
-                        const date = order.createdAt?.toDate().toLocaleDateString('en-GB') || "Processing";
-                        list.innerHTML += `
+            async function loadUserOrders(userEmail) {
+                const list = document.getElementById('ordersList');
+                try {
+                    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+                    const snap = await getDocs(q);
+                    list.innerHTML = "";
+                    let found = 0;
+                    snap.forEach(doc => {
+                        const order = doc.data();
+                        const orderEmail = order.customer?.email || order.email;
+                        if (orderEmail === userEmail) {
+                            found++;
+                            const date = order.createdAt?.toDate().toLocaleDateString('en-GB') || "Processing";
+                            list.innerHTML += `
                         <div class="order-card" style="border-left: 4px solid #000;">
                             <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
                                 <b>ID: #${doc.id.slice(0, 8)}</b>
@@ -1039,92 +1060,90 @@
                             </div>
                             <div style="font-size:11px;">📅 ${date} | 💰 ${order.total} EGP</div>
                         </div>`;
-                    }
-                });
-                if (found === 0) list.innerHTML = `<p style="font-size:12px; color:#999; text-align:center">No orders found.</p>`;
-            } catch (err) { console.error(err); }
-        }
-
-        // --- [2] نظام صفحة المنتج والمخزون ---
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id');
-
-        async function loadProduct() {
-            if (!productId) return;
-            const docRef = doc(db, "products", productId);
-            const snap = await getDoc(docRef);
-            if (snap.exists()) {
-                product = { id: snap.id, ...snap.data() };
-                renderProduct();
-                loadReviews();
-                loadRelatedProducts();
+                        }
+                    });
+                    if (found === 0) list.innerHTML = `<p style="font-size:12px; color:#999; text-align:center">No orders found.</p>`;
+                } catch (err) { console.error(err); }
             }
-        }
 
-        function renderProduct() {
-            document.getElementById('productName').innerText = product.name;
-            document.getElementById('currentPrice').innerText = (product.salePrice || product.price) + " EGP";
-            if (product.salePrice < product.price) document.getElementById('oldPrice').innerText = product.price + " EGP";
-            document.getElementById('productDescContent').innerText = product.pDesc || "لا يوجد وصف";
+            // --- [2] نظام صفحة المنتج والمخزون ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
 
-            // السلايدر (Slider)
-            const swiperWrapper = document.getElementById('swiperWrapper');
-            if(swiperWrapper) {
-                swiperWrapper.innerHTML = "";
-                const imagesToDisplay = product.allImages && product.allImages.length > 0 ? product.allImages : [product.image];
-                imagesToDisplay.forEach(imgUrl => {
-                    swiperWrapper.innerHTML += `
+            async function loadProduct() {
+                if (!productId) return;
+                const docRef = doc(db, "products", productId);
+                const snap = await getDoc(docRef);
+                if (snap.exists()) {
+                    product = { id: snap.id, ...snap.data() };
+                    renderProduct();
+                    loadReviews();
+                    loadRelatedProducts();
+                }
+            }
+
+            function renderProduct() {
+                document.getElementById('productName').innerText = product.name;
+                document.getElementById('currentPrice').innerText = (product.salePrice || product.price) + " EGP";
+                if (product.salePrice < product.price) document.getElementById('oldPrice').innerText = product.price + " EGP";
+                document.getElementById('productDescContent').innerText = product.pDesc || "لا يوجد وصف";
+
+                // السلايدر (Slider)
+                const swiperWrapper = document.getElementById('swiperWrapper');
+                if (swiperWrapper) {
+                    swiperWrapper.innerHTML = "";
+                    const imagesToDisplay = product.allImages && product.allImages.length > 0 ? product.allImages : [product.image];
+                    imagesToDisplay.forEach(imgUrl => {
+                        swiperWrapper.innerHTML += `
                         <div class="swiper-slide">
-                            <img src="${imgUrl}" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 15px;">
-                        </div>`;
-                });
+<img src="${imgUrl}" style="width: 100%; aspect-ratio: 9 / 16 !important; object-fit: cover; border-radius: 15px;">                        </div>`;
+                    });
 
-                new Swiper(".mySwiper", {
-                    loop: true,
-                    pagination: { el: ".swiper-pagination", clickable: true },
-                    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-                    grabCursor: true,
+                    new Swiper(".mySwiper", {
+                        loop: true,
+                        pagination: { el: ".swiper-pagination", clickable: true },
+                        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+                        grabCursor: true,
+                    });
+                }
+
+                const colorSelector = document.getElementById('colorSelector');
+                colorSelector.innerHTML = "";
+                product.variants.forEach((v, i) => {
+                    const btn = document.createElement('div');
+                    btn.className = 'tag';
+                    btn.innerText = v.color;
+                    btn.onclick = () => {
+                        selectedColor = v.color;
+                        document.querySelectorAll('#colorSelector .tag').forEach(t => t.classList.remove('active'));
+                        btn.classList.add('active');
+                        renderSizes(v.stock);
+                    };
+                    colorSelector.appendChild(btn);
+                    if (i === 0) btn.click();
                 });
             }
+            async function loadRelatedProducts(catName) {
+                const grid = document.getElementById('relatedProductsGrid'); // التأكد من تطابق الاسم هنا
+                if (!grid) return;
+                try {
+                    const querySnapshot = await getDocs(collection(db, "products"));
+                    let html = "";
+                    let count = 0;
+                    const cleanCat = catName ? catName.trim().toLowerCase() : "";
 
-            const colorSelector = document.getElementById('colorSelector');
-            colorSelector.innerHTML = "";
-            product.variants.forEach((v, i) => {
-                const btn = document.createElement('div');
-                btn.className = 'tag';
-                btn.innerText = v.color;
-                btn.onclick = () => {
-                    selectedColor = v.color;
-                    document.querySelectorAll('#colorSelector .tag').forEach(t => t.classList.remove('active'));
-                    btn.classList.add('active');
-                    renderSizes(v.stock);
-                };
-                colorSelector.appendChild(btn);
-                if (i === 0) btn.click();
-            });
-        }
-async function loadRelatedProducts(catName) {
-    const grid = document.getElementById('relatedProductsGrid'); // التأكد من تطابق الاسم هنا
-    if (!grid) return;
-    try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        let html = "";
-        let count = 0;
-        const cleanCat = catName ? catName.trim().toLowerCase() : "";
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const dbCat = data.category ? data.category.trim().toLowerCase() : "";
 
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const dbCat = data.category ? data.category.trim().toLowerCase() : "";
+                        if (dbCat === cleanCat && doc.id !== productId && count < 4) {
+                            // الحسبة اللي بتسأل عليها: هل فيه خصم؟
+                            const hasSale = data.salePrice && Number(data.salePrice) < Number(data.price);
 
-            if (dbCat === cleanCat && doc.id !== productId && count < 4) {
-                // الحسبة اللي بتسأل عليها: هل فيه خصم؟
-                const hasSale = data.salePrice && Number(data.salePrice) < Number(data.price);
-                
-                html += `
+                            html += `
                 <div class="product-card" onclick="location.href='product.html?id=${doc.id}'" style="position:relative; cursor:pointer; background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
                     ${hasSale ? `<div style="position:absolute; top:10px; right:10px; background:var(--sale); color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:bold; z-index:1;">SALE</div>` : ''}
-                    <img src="${data.image}" style="width:100%; aspect-ratio:1/1; object-fit:cover;">
-                    <div style="padding:10px; text-align:right;">
+<img src="${data.image}" style="width:100%; aspect-ratio: 9 / 16 !important; object-fit:cover;">                    <div style="padding:10px; text-align:right;">
                         <div style="font-size:12px; font-weight:bold; height:34px; overflow:hidden; color:var(--text);">${data.name}</div>
                         <div style="margin-top:5px;">
                             <span style="color:var(--sale); font-weight:bold;">${hasSale ? data.salePrice : data.price} EGP</span>
@@ -1132,177 +1151,177 @@ async function loadRelatedProducts(catName) {
                         </div>
                     </div>
                 </div>`;
-                count++;
+                            count++;
+                        }
+                    });
+                    grid.innerHTML = html || "<p style='text-align:center; width:100%; color:#888;'>لا توجد منتجات مشابهة</p>";
+                } catch (err) { console.error("Related Error:", err); }
             }
-        });
-        grid.innerHTML = html || "<p style='text-align:center; width:100%; color:#888;'>لا توجد منتجات مشابهة</p>";
-    } catch (err) { console.error("Related Error:", err); }
-}
 
-        function renderSizes(stock) {
-            const sizeSelector = document.getElementById('sizeSelector');
-            sizeSelector.innerHTML = '';
-            selectedSize = "";
-            maxAvailable = 0;
-            quantity = 1;
-            document.getElementById('qtyVal').innerText = "1";
-            document.getElementById('stockNotice').innerText = "";
+            function renderSizes(stock) {
+                const sizeSelector = document.getElementById('sizeSelector');
+                sizeSelector.innerHTML = '';
+                selectedSize = "";
+                maxAvailable = 0;
+                quantity = 1;
+                document.getElementById('qtyVal').innerText = "1";
+                document.getElementById('stockNotice').innerText = "";
 
-            ['S', 'M', 'L', 'XL', 'XXL'].forEach(s => {
-                const tag = document.createElement('div');
-                const avail = parseInt(stock[s]) || 0;
-                tag.className = avail > 0 ? 'tag' : 'tag disabled';
-                tag.innerText = s;
-                if (avail > 0) {
-                    tag.onclick = () => {
-                        selectedSize = s;
-                        maxAvailable = avail;
-                        document.querySelectorAll('#sizeSelector .tag').forEach(t => t.classList.remove('active'));
-                        tag.classList.add('active');
-                        document.getElementById('stockNotice').innerText = `(المتاح: ${avail})`;
-                    };
-                }
-                sizeSelector.appendChild(tag);
-            });
-        }
-
-       window.changeQty = (val) => {
-    if (!selectedSize) { alert("اختر المقاس أولاً"); return; }
-    if (quantity + val < 1) return;
-    if (quantity + val > maxAvailable) { alert(`المتاح ${maxAvailable} فقط`); return; }
-    quantity += val;
-    document.getElementById('qtyVal').innerText = quantity;
-
-    // ⚡ مسح الكوبون القديم بعد أي تعديل في الكمية
-    appliedPromoCode = null;
-    document.getElementById('checkoutPromoInput').value = "";
-    document.getElementById('checkoutPromoMsg').innerText = "";
-    updateCheckoutTotal();
-};
-
-
-        window.addToCart = (showCart = true) => {
-            if (!selectedSize) return alert("الرجاء اختيار المقاس");
-            const item = {
-                id: productId,
-                name: product.name,
-                price: product.salePrice || product.price,
-                color: selectedColor,
-                size: selectedSize,
-                image: product.image,
-                qty: quantity
-            };
-            cart.push(item);
-            updateCart();
-            if (showCart) toggleCart(true);
-        };
-
-        window.confirmOrder = async () => {
-    const name = document.getElementById('custName').value;
-    const phone = document.getElementById('custPhone').value;
-    const addr = document.getElementById('custAddress').value;
-    if (!name || !phone || !addr) return alert("أكمل البيانات");
-
-    let orderItems = tempItem ? [tempItem] : [...cart];
-    if (orderItems.length === 0) return alert("لا توجد منتجات");
-
-    const btn = document.getElementById('confirmBtn');
-    btn.innerText = "جاري التأكيد..."; btn.disabled = true;
-
-    try {
-        // حساب الإجمالي قبل الخصم
-        const originalTotal = orderItems.reduce((sum, item) => sum + (Number(item.price) * Number(item.qty)), 0);
-
-        // حساب الخصم لو فيه كود
-        let discountValue = 0;
-        let promoUsed = null;
-        let promoType = null;
-        let promoValue = 0;
-
-        if(appliedPromoCode) {
-            promoUsed = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
-            promoType = appliedPromoCode.discountType;
-            promoValue = appliedPromoCode.discountValue;
-
-            if(promoType === "percentage") discountValue = originalTotal * promoValue / 100;
-            else if(promoType === "fixed") discountValue = promoValue;
-
-            if(discountValue > originalTotal) discountValue = originalTotal; // ما يخليش المبلغ سالب
-        }
-
-        const finalTotal = originalTotal - discountValue;
-
-        await addDoc(collection(db, "orders"), {
-            customer: { name, phone, address: addr, email: currentUser?.email || "Guest" },
-            items: orderItems,
-            originalTotal,
-            promoUsed,
-            promoType,
-            promoValue,
-            discountValue,
-            total: finalTotal,
-            status: "new",
-            createdAt: new Date()
-        });
-
-        // تحديث المخزون
-        for (const item of orderItems) {
-            const productRef = doc(db, "products", item.id);
-            const pSnap = await getDoc(productRef);
-            if (pSnap.exists()) {
-                const pData = pSnap.data();
-                const updatedVariants = pData.variants.map(v => {
-                    if (v.color === item.color && v.stock && item.size in v.stock) {
-                        let currentStock = Number(v.stock[item.size]) || 0;
-                        let orderedQty = Number(item.qty) || 1;
-                        v.stock[item.size] = Math.max(0, currentStock - orderedQty);
+                ['S', 'M', 'L', 'XL', 'XXL'].forEach(s => {
+                    const tag = document.createElement('div');
+                    const avail = parseInt(stock[s]) || 0;
+                    tag.className = avail > 0 ? 'tag' : 'tag disabled';
+                    tag.innerText = s;
+                    if (avail > 0) {
+                        tag.onclick = () => {
+                            selectedSize = s;
+                            maxAvailable = avail;
+                            document.querySelectorAll('#sizeSelector .tag').forEach(t => t.classList.remove('active'));
+                            tag.classList.add('active');
+                            document.getElementById('stockNotice').innerText = `(المتاح: ${avail})`;
+                        };
                     }
-                    return v;
+                    sizeSelector.appendChild(tag);
                 });
-                await updateDoc(productRef, { variants: updatedVariants });
             }
-        }
 
-        alert("تم استلام طلبك!");
-        localStorage.removeItem('zorin_cart');
-        location.href = "index.html";
-    } catch (error) { 
-        console.error(error); 
-        alert("خطأ في الطلب"); 
-        btn.innerText = "تأكيد الطلب"; btn.disabled = false; 
-    }
-};
+            window.changeQty = (val) => {
+                if (!selectedSize) { alert("اختر المقاس أولاً"); return; }
+                if (quantity + val < 1) return;
+                if (quantity + val > maxAvailable) { alert(`المتاح ${maxAvailable} فقط`); return; }
+                quantity += val;
+                document.getElementById('qtyVal').innerText = quantity;
 
-        // --- [4] وظائف الـ UI ---
-        window.toggleSidebar = (id) => {
-            document.getElementById(id).classList.add('active');
-            document.getElementById('overlay').classList.add('show');
-        };
+                // ⚡ مسح الكوبون القديم بعد أي تعديل في الكمية
+                appliedPromoCode = null;
+                document.getElementById('checkoutPromoInput').value = "";
+                document.getElementById('checkoutPromoMsg').innerText = "";
+                updateCheckoutTotal();
+            };
 
-        window.closeAllSidebars = () => {
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('userSidebar').classList.remove('active');
-            document.getElementById('overlay').classList.remove('show');
-        };
 
-        window.toggleCart = (show) => {
-            document.getElementById('cartDrawer').classList.toggle('open', show);
-            document.getElementById('overlay').classList.toggle('active', show);
-        };
+            window.addToCart = (showCart = true) => {
+                if (!selectedSize) return alert("الرجاء اختيار المقاس");
+                const item = {
+                    id: productId,
+                    name: product.name,
+                    price: product.salePrice || product.price,
+                    color: selectedColor,
+                    size: selectedSize,
+                    image: product.image,
+                    qty: quantity
+                };
+                cart.push(item);
+                updateCart();
+                if (showCart) toggleCart(true);
+            };
 
-        window.closeAll = () => {
-            closeAllSidebars();
-            toggleCart(false);
-            document.getElementById('checkoutModal').style.display = 'none';
-        };
+            window.confirmOrder = async () => {
+                const name = document.getElementById('custName').value;
+                const phone = document.getElementById('custPhone').value;
+                const addr = document.getElementById('custAddress').value;
+                if (!name || !phone || !addr) return alert("أكمل البيانات");
 
-       window.updateCart = () => {
-    localStorage.setItem('zorin_cart', JSON.stringify(cart));
-    document.getElementById('cartBadge').innerText = cart.length;
-    document.getElementById('cartCountSidebar').innerText = cart.length;
+                let orderItems = tempItem ? [tempItem] : [...cart];
+                if (orderItems.length === 0) return alert("لا توجد منتجات");
 
-    const list = document.getElementById('cartItemsList');
-    list.innerHTML = cart.map((item, index) => `
+                const btn = document.getElementById('confirmBtn');
+                btn.innerText = "جاري التأكيد..."; btn.disabled = true;
+
+                try {
+                    // حساب الإجمالي قبل الخصم
+                    const originalTotal = orderItems.reduce((sum, item) => sum + (Number(item.price) * Number(item.qty)), 0);
+
+                    // حساب الخصم لو فيه كود
+                    let discountValue = 0;
+                    let promoUsed = null;
+                    let promoType = null;
+                    let promoValue = 0;
+
+                    if (appliedPromoCode) {
+                        promoUsed = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
+                        promoType = appliedPromoCode.discountType;
+                        promoValue = appliedPromoCode.discountValue;
+
+                        if (promoType === "percentage") discountValue = originalTotal * promoValue / 100;
+                        else if (promoType === "fixed") discountValue = promoValue;
+
+                        if (discountValue > originalTotal) discountValue = originalTotal; // ما يخليش المبلغ سالب
+                    }
+
+                    const finalTotal = originalTotal - discountValue;
+
+                    await addDoc(collection(db, "orders"), {
+                        customer: { name, phone, address: addr, email: currentUser?.email || "Guest" },
+                        items: orderItems,
+                        originalTotal,
+                        promoUsed,
+                        promoType,
+                        promoValue,
+                        discountValue,
+                        total: finalTotal,
+                        status: "new",
+                        createdAt: new Date()
+                    });
+
+                    // تحديث المخزون
+                    for (const item of orderItems) {
+                        const productRef = doc(db, "products", item.id);
+                        const pSnap = await getDoc(productRef);
+                        if (pSnap.exists()) {
+                            const pData = pSnap.data();
+                            const updatedVariants = pData.variants.map(v => {
+                                if (v.color === item.color && v.stock && item.size in v.stock) {
+                                    let currentStock = Number(v.stock[item.size]) || 0;
+                                    let orderedQty = Number(item.qty) || 1;
+                                    v.stock[item.size] = Math.max(0, currentStock - orderedQty);
+                                }
+                                return v;
+                            });
+                            await updateDoc(productRef, { variants: updatedVariants });
+                        }
+                    }
+
+                    alert("تم استلام طلبك!");
+                    localStorage.removeItem('zorin_cart');
+                    location.href = "index.html";
+                } catch (error) {
+                    console.error(error);
+                    alert("خطأ في الطلب");
+                    btn.innerText = "تأكيد الطلب"; btn.disabled = false;
+                }
+            };
+
+            // --- [4] وظائف الـ UI ---
+            window.toggleSidebar = (id) => {
+                document.getElementById(id).classList.add('active');
+                document.getElementById('overlay').classList.add('show');
+            };
+
+            window.closeAllSidebars = () => {
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('userSidebar').classList.remove('active');
+                document.getElementById('overlay').classList.remove('show');
+            };
+
+            window.toggleCart = (show) => {
+                document.getElementById('cartDrawer').classList.toggle('open', show);
+                document.getElementById('overlay').classList.toggle('active', show);
+            };
+
+            window.closeAll = () => {
+                closeAllSidebars();
+                toggleCart(false);
+                document.getElementById('checkoutModal').style.display = 'none';
+            };
+
+            window.updateCart = () => {
+                localStorage.setItem('zorin_cart', JSON.stringify(cart));
+                document.getElementById('cartBadge').innerText = cart.length;
+                document.getElementById('cartCountSidebar').innerText = cart.length;
+
+                const list = document.getElementById('cartItemsList');
+                list.innerHTML = cart.map((item, index) => `
         <div class="cart-item">
             <img src="${item.image}">
             <div style="flex-grow:1">
@@ -1314,69 +1333,69 @@ async function loadRelatedProducts(catName) {
         </div>
     `).join('');
 
-    const total = cart.reduce((sum, item) => sum + (item.salePrice || item.price) * item.qty, 0);
-    document.getElementById('cartTotal').innerText = "الإجمالي: " + total + " EGP";
+                const total = cart.reduce((sum, item) => sum + (item.salePrice || item.price) * item.qty, 0);
+                document.getElementById('cartTotal').innerText = "الإجمالي: " + total + " EGP";
 
-    // ⚡ مسح الكوبون القديم عند أي تغيير في العربة
-    appliedPromoCode = null;
-    document.getElementById('checkoutPromoInput').value = "";
-    document.getElementById('checkoutPromoMsg').innerText = "";
-    updateCheckoutTotal(); // إعادة حساب الإجمالي بعد مسح الكوبون
-};
+                // ⚡ مسح الكوبون القديم عند أي تغيير في العربة
+                appliedPromoCode = null;
+                document.getElementById('checkoutPromoInput').value = "";
+                document.getElementById('checkoutPromoMsg').innerText = "";
+                updateCheckoutTotal(); // إعادة حساب الإجمالي بعد مسح الكوبون
+            };
 
-        window.removeItem = (i) => { cart.splice(i, 1); window.updateCart(); };
-        window.buyNow = () => {
-    if (!selectedSize) return alert("الرجاء اختيار المقاس");
-    tempItem = {
-        id: productId,
-        name: product.name,
-        price: product.price,       // السعر الأصلي
-        salePrice: product.salePrice || null, // السعر بعد الخصم لو موجود
-        color: selectedColor,
-        size: selectedSize,
-        image: product.image,
-        qty: quantity
-    };
-    document.getElementById('checkoutModal').style.display = 'block';
-    document.getElementById('overlay').classList.add('active');
+            window.removeItem = (i) => { cart.splice(i, 1); window.updateCart(); };
+            window.buyNow = () => {
+                if (!selectedSize) return alert("الرجاء اختيار المقاس");
+                tempItem = {
+                    id: productId,
+                    name: product.name,
+                    price: product.price,       // السعر الأصلي
+                    salePrice: product.salePrice || null, // السعر بعد الخصم لو موجود
+                    color: selectedColor,
+                    size: selectedSize,
+                    image: product.image,
+                    qty: quantity
+                };
+                document.getElementById('checkoutModal').style.display = 'block';
+                document.getElementById('overlay').classList.add('active');
 
-    updateCheckoutTotal();
-};
+                updateCheckoutTotal();
+            };
 
-        window.openCheckout = () => { if (cart.length > 0) { tempItem = null; document.getElementById('checkoutModal').style.display = 'block'; toggleCart(false); } };
-        window.closeCheckout = () => { document.getElementById('checkoutModal').style.display = 'none'; document.getElementById('overlay').classList.remove('active'); };
-        window.handleUserIcon = () => currentUser ? toggleSidebar('userSidebar') : location.href = 'login.html';
-        window.confirmLogout = () => confirm("Logout?") && signOut(auth).then(() => location.reload());
-        window.toggleDarkMode = () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('zorin_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); };
+            window.openCheckout = () => { if (cart.length > 0) { tempItem = null; document.getElementById('checkoutModal').style.display = 'block'; toggleCart(false); } };
+            window.closeCheckout = () => { document.getElementById('checkoutModal').style.display = 'none'; document.getElementById('overlay').classList.remove('active'); };
+            window.handleUserIcon = () => currentUser ? toggleSidebar('userSidebar') : location.href = 'login.html';
+            window.confirmLogout = () => confirm("Logout?") && signOut(auth).then(() => location.reload());
+            window.toggleDarkMode = () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('zorin_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); };
 
-        window.toggleAcc = (btn) => {
-            const content = btn.nextElementSibling;
-            const icon = btn.querySelector('i');
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-                icon.classList.replace('fa-minus', 'fa-plus');
-            } else {
-                document.querySelectorAll('.acc-content').forEach(c => c.style.maxHeight = null);
-                document.querySelectorAll('.acc-btn i').forEach(i => i.classList.replace('fa-minus', 'fa-plus'));
-                content.style.maxHeight = content.scrollHeight + "px";
-                icon.classList.replace('fa-plus', 'fa-minus');
-            }
-        };
-
-        // دالة عرض التقييمات
-        window.loadReviews = async () => {
-            const list = document.getElementById('reviewsList');
-            try {
-                const q = query(collection(db, "reviews"), where("productId", "==", productId));
-                const snap = await getDocs(q);
-                if (snap.empty) {
-                    list.innerHTML = `<p style="color: #999;">لا توجد تقييمات بعد.</p>`;
-                    return;
+            window.toggleAcc = (btn) => {
+                const content = btn.nextElementSibling;
+                const icon = btn.querySelector('i');
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    icon.classList.replace('fa-minus', 'fa-plus');
+                } else {
+                    document.querySelectorAll('.acc-content').forEach(c => c.style.maxHeight = null);
+                    document.querySelectorAll('.acc-btn i').forEach(i => i.classList.replace('fa-minus', 'fa-plus'));
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    icon.classList.replace('fa-plus', 'fa-minus');
                 }
-                let html = "";
-                snap.forEach(d => {
-                    const r = d.data();
-                    html += `
+            };
+
+            // دالة عرض التقييمات
+            window.loadReviews = async () => {
+                const list = document.getElementById('reviewsList');
+                try {
+                    const q = query(collection(db, "reviews"), where("productId", "==", productId));
+                    const snap = await getDocs(q);
+                    if (snap.empty) {
+                        list.innerHTML = `<p style="color: #999;">لا توجد تقييمات بعد.</p>`;
+                        return;
+                    }
+                    let html = "";
+                    snap.forEach(d => {
+                        const r = d.data();
+                        html += `
                         <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <b style="font-size:14px;">${r.userName}</b>
@@ -1385,161 +1404,160 @@ async function loadRelatedProducts(catName) {
                             <p style="margin:5px 0; font-size:13px; color:#555;">${r.comment}</p>
                             <small style="color:#bbb; font-size:10px;">${r.createdAt?.toDate().toLocaleDateString() || ''}</small>
                         </div>`;
-                });
-                list.innerHTML = html;
-            } catch (e) { console.error("Error loading reviews:", e); }
-        };
-
-        // دالة إرسال التقييم الموحدة
-        window.sendReview = async () => {
-            const comm = document.getElementById('rateComm').value;
-            const rating = document.getElementById('selectedRating').value;
-            const visitorName = document.getElementById('visitorName').value;
-            const btn = document.getElementById('btnRev');
-
-            if (!comm) return alert("اكتب تعليقك الأول");
-
-            let finalName = currentUser ? (currentUser.displayName || currentUser.email.split('@')[0]) : (visitorName || "عميل مجهول");
-
-            btn.innerText = "جاري النشر..."; btn.disabled = true;
-
-            try {
-                await addDoc(collection(db, "reviews"), {
-                    productId: productId,
-                    userName: finalName,
-                    comment: comm,
-                    rating: parseInt(rating),
-                    createdAt: new Date()
-                });
-                alert("شكراً لتقييمك يا " + finalName);
-                location.reload(); 
-            } catch (e) {
-                alert("حدث خطأ أثناء النشر");
-                btn.disabled = false;
-                btn.innerText = "نشر التقييم";
-            }
-        };
-
-        // نظام النجوم
-        let selectedRating = 5;
-        document.querySelectorAll('.star').forEach(star => {
-            star.onclick = function() {
-                selectedRating = this.dataset.value;
-                document.getElementById('selectedRating').value = selectedRating;
-                document.querySelectorAll('.star').forEach(s => {
-                    s.style.color = (s.dataset.value <= selectedRating) ? '#ffc107' : '#ccc';
-                });
-            }
-        });
-
-        window.onload = () => {
-            if (localStorage.getItem('zorin_theme') === 'dark') document.body.classList.add('dark-mode');
-            loadProduct();
-            window.updateCart();
-        };
-   
-
-
-let checkoutDiscount = 0;
-let appliedPromoCode = null;
-let checkoutType = null; // "single" أو "cart"
-
-
-async function loadPromoCodes() {
-    const promoMap = {};
-    try {
-        const q = query(collection(db, "promoCodes"), orderBy("createdAt", "desc"));
-        const snap = await getDocs(q);
-        snap.forEach(docSnap => {
-            const promo = docSnap.data();
-            promoMap[promo.code.trim().toUpperCase()] = {
-                discountType: promo.discountType,
-                discountValue: promo.discountValue
+                    });
+                    list.innerHTML = html;
+                } catch (e) { console.error("Error loading reviews:", e); }
             };
-        });
-    } catch (err) {
-        console.error("Error loading promo codes:", err);
-    }
-    return promoMap;
-}
 
-function calculateTotal() {
-    let total = 0;
-    if(tempItem) {
-        const basePrice = tempItem.salePrice || tempItem.price || 0;
-        total = basePrice * (tempItem.qty || 1);
-    } else if(cart.length > 0) {
-        cart.forEach(item => {
-            total += (item.salePrice || item.price || 0) * (item.qty || 1);
-        });
-    }
-    return total;
-}
+            // دالة إرسال التقييم الموحدة
+            window.sendReview = async () => {
+                const comm = document.getElementById('rateComm').value;
+                const rating = document.getElementById('selectedRating').value;
+                const visitorName = document.getElementById('visitorName').value;
+                const btn = document.getElementById('btnRev');
 
+                if (!comm) return alert("اكتب تعليقك الأول");
 
-function updateCheckoutTotal() {
-    let total = calculateTotal();
-    let finalTotal = total;
-    const msgElem = document.getElementById('checkoutPromoMsg');
+                let finalName = currentUser ? (currentUser.displayName || currentUser.email.split('@')[0]) : (visitorName || "عميل مجهول");
 
-    if (appliedPromoCode) {
-        // فيه كوبون صحيح
-        if (appliedPromoCode.discountType === "percentage") {
-            const discount = total * appliedPromoCode.discountValue / 100;
-            finalTotal = total - discount;
-            msgElem.innerText = `تم خصم ${appliedPromoCode.discountValue}% (${discount.toFixed(2)} EGP). المبلغ المطلوب: ${finalTotal.toFixed(2)} EGP`;
-        } else if (appliedPromoCode.discountType === "fixed") {
-            const discount = appliedPromoCode.discountValue;
-            finalTotal = total - discount;
-            if(finalTotal < 0) finalTotal = 0;
-            msgElem.innerText = `تم خصم ${discount.toFixed(2)} EGP. المبلغ المطلوب: ${finalTotal.toFixed(2)} EGP`;
-        }
-    } else {
-        // مفيش كوبون صحيح → ما تمسحش الرسالة لو موجودة
-        if (!msgElem.innerText.includes("كود غير صالح")) {
-            msgElem.innerText = ""; // امسح الرسالة بس لو مش رسالة خطأ
-        }
-    }
+                btn.innerText = "جاري النشر..."; btn.disabled = true;
 
-    document.getElementById('checkoutTotal').innerText = finalTotal.toFixed(2) + " EGP";
-}
+                try {
+                    await addDoc(collection(db, "reviews"), {
+                        productId: productId,
+                        userName: finalName,
+                        comment: comm,
+                        rating: parseInt(rating),
+                        createdAt: new Date()
+                    });
+                    alert("شكراً لتقييمك يا " + finalName);
+                    location.reload();
+                } catch (e) {
+                    alert("حدث خطأ أثناء النشر");
+                    btn.disabled = false;
+                    btn.innerText = "نشر التقييم";
+                }
+            };
 
+            // نظام النجوم
+            let selectedRating = 5;
+            document.querySelectorAll('.star').forEach(star => {
+                star.onclick = function () {
+                    selectedRating = this.dataset.value;
+                    document.getElementById('selectedRating').value = selectedRating;
+                    document.querySelectorAll('.star').forEach(s => {
+                        s.style.color = (s.dataset.value <= selectedRating) ? '#ffc107' : '#ccc';
+                    });
+                }
+            });
 
-document.getElementById('checkoutApplyPromo').addEventListener('click', async () => {
-    const codeInput = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
-    const promoCodes = await loadPromoCodes();
-
-    const msgElem = document.getElementById('checkoutPromoMsg');
-
-    if (promoCodes[codeInput]) {
-        appliedPromoCode = promoCodes[codeInput];
-        msgElem.innerText = `تم تطبيق خصم ${appliedPromoCode.discountType === "percentage" ? appliedPromoCode.discountValue + "%" : appliedPromoCode.discountValue + " EGP"}`;
-    } else {
-        appliedPromoCode = null;
-        msgElem.innerText = "كود غير صالح"; // 🔹 خليها هنا قبل updateCheckoutTotal
-    }
-
-    updateCheckoutTotal(); // هنا السعر يتحدث بدون مسح الرسالة
-});
+            window.onload = () => {
+                if (localStorage.getItem('zorin_theme') === 'dark') document.body.classList.add('dark-mode');
+                loadProduct();
+                window.updateCart();
+            };
 
 
-function openCheckout(item = null, type = "single") {
-    tempItem = item;          // المنتج الفردي لو Buy Now
-    checkoutType = type;      // "single" أو "cart"
-    checkoutDiscount = 0;
-    appliedPromoCode = null;
 
-    document.getElementById('checkoutPromoInput').value = "";
-    document.getElementById('checkoutPromoMsg').innerText = "";
-    document.getElementById('checkoutModal').style.display = 'block';
-    document.getElementById('overlay').classList.add('active');
-
-    updateCheckoutTotal(); // تحديث الإجمالي بعد فتح الشحن
-}
+            let checkoutDiscount = 0;
+            let appliedPromoCode = null;
+            let checkoutType = null; // "single" أو "cart"
 
 
-    </script>
+            async function loadPromoCodes() {
+                const promoMap = {};
+                try {
+                    const q = query(collection(db, "promoCodes"), orderBy("createdAt", "desc"));
+                    const snap = await getDocs(q);
+                    snap.forEach(docSnap => {
+                        const promo = docSnap.data();
+                        promoMap[promo.code.trim().toUpperCase()] = {
+                            discountType: promo.discountType,
+                            discountValue: promo.discountValue
+                        };
+                    });
+                } catch (err) {
+                    console.error("Error loading promo codes:", err);
+                }
+                return promoMap;
+            }
+
+            function calculateTotal() {
+                let total = 0;
+                if (tempItem) {
+                    const basePrice = tempItem.salePrice || tempItem.price || 0;
+                    total = basePrice * (tempItem.qty || 1);
+                } else if (cart.length > 0) {
+                    cart.forEach(item => {
+                        total += (item.salePrice || item.price || 0) * (item.qty || 1);
+                    });
+                }
+                return total;
+            }
+
+
+            function updateCheckoutTotal() {
+                let total = calculateTotal();
+                let finalTotal = total;
+                const msgElem = document.getElementById('checkoutPromoMsg');
+
+                if (appliedPromoCode) {
+                    // فيه كوبون صحيح
+                    if (appliedPromoCode.discountType === "percentage") {
+                        const discount = total * appliedPromoCode.discountValue / 100;
+                        finalTotal = total - discount;
+                        msgElem.innerText = `تم خصم ${appliedPromoCode.discountValue}% (${discount.toFixed(2)} EGP). المبلغ المطلوب: ${finalTotal.toFixed(2)} EGP`;
+                    } else if (appliedPromoCode.discountType === "fixed") {
+                        const discount = appliedPromoCode.discountValue;
+                        finalTotal = total - discount;
+                        if (finalTotal < 0) finalTotal = 0;
+                        msgElem.innerText = `تم خصم ${discount.toFixed(2)} EGP. المبلغ المطلوب: ${finalTotal.toFixed(2)} EGP`;
+                    }
+                } else {
+                    // مفيش كوبون صحيح → ما تمسحش الرسالة لو موجودة
+                    if (!msgElem.innerText.includes("كود غير صالح")) {
+                        msgElem.innerText = ""; // امسح الرسالة بس لو مش رسالة خطأ
+                    }
+                }
+
+                document.getElementById('checkoutTotal').innerText = finalTotal.toFixed(2) + " EGP";
+            }
+
+
+            document.getElementById('checkoutApplyPromo').addEventListener('click', async () => {
+                const codeInput = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
+                const promoCodes = await loadPromoCodes();
+
+                const msgElem = document.getElementById('checkoutPromoMsg');
+
+                if (promoCodes[codeInput]) {
+                    appliedPromoCode = promoCodes[codeInput];
+                    msgElem.innerText = `تم تطبيق خصم ${appliedPromoCode.discountType === "percentage" ? appliedPromoCode.discountValue + "%" : appliedPromoCode.discountValue + " EGP"}`;
+                } else {
+                    appliedPromoCode = null;
+                    msgElem.innerText = "كود غير صالح"; // 🔹 خليها هنا قبل updateCheckoutTotal
+                }
+
+                updateCheckoutTotal(); // هنا السعر يتحدث بدون مسح الرسالة
+            });
+
+
+            function openCheckout(item = null, type = "single") {
+                tempItem = item;          // المنتج الفردي لو Buy Now
+                checkoutType = type;      // "single" أو "cart"
+                checkoutDiscount = 0;
+                appliedPromoCode = null;
+
+                document.getElementById('checkoutPromoInput').value = "";
+                document.getElementById('checkoutPromoMsg').innerText = "";
+                document.getElementById('checkoutModal').style.display = 'block';
+                document.getElementById('overlay').classList.add('active');
+
+                updateCheckoutTotal(); // تحديث الإجمالي بعد فتح الشحن
+            }
+
+
+        </script>
 </body>
 
 </html>
-
