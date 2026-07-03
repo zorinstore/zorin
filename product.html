@@ -381,7 +381,7 @@
             width: 100%;
             border-radius: 12px;
             object-fit: cover;
-            aspect-ratio: 9/16;
+            aspect-ratio: 4/5;
             background: var(--grey);
         }
 
@@ -637,7 +637,7 @@
         .swiper {
             width: 100%;
             max-width: 500px;
-            aspect-ratio: 9 / 16 !important;
+            aspect-ratio: 4 / 5 !important;
             /* 👈 غير المقاس هنا */
             height: auto;
             margin-bottom: 20px;
@@ -1096,7 +1096,7 @@
                     imagesToDisplay.forEach(imgUrl => {
                         swiperWrapper.innerHTML += `
                         <div class="swiper-slide">
-<img src="${imgUrl}" style="width: 100%; aspect-ratio: 9 / 16 !important; object-fit: cover; border-radius: 15px;">                        </div>`;
+<img src="${imgUrl}" style="width: 100%; aspect-ratio: 4 / 5 !important; object-fit: cover; border-radius: 15px;">                        </div>`;
                     });
 
                     new Swiper(".mySwiper", {
@@ -1143,7 +1143,7 @@
                             html += `
                 <div class="product-card" onclick="location.href='product.html?id=${doc.id}'" style="position:relative; cursor:pointer; background:var(--bg); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
                     ${hasSale ? `<div style="position:absolute; top:10px; right:10px; background:var(--sale); color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:bold; z-index:1;">SALE</div>` : ''}
-<img src="${data.image}" style="width:100%; aspect-ratio: 9 / 16 !important; object-fit:cover;">                    <div style="padding:10px; text-align:right;">
+<img src="${data.image}" style="width:100%; aspect-ratio: 4 / 5 !important; object-fit:cover;">                    <div style="padding:10px; text-align:right;">
                         <div style="font-size:12px; font-weight:bold; height:34px; overflow:hidden; color:var(--text);">${data.name}</div>
                         <div style="margin-top:5px;">
                             <span style="color:var(--sale); font-weight:bold;">${hasSale ? data.salePrice : data.price} EGP</span>
