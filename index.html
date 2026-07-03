@@ -301,7 +301,7 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 30px;
         }
 
@@ -317,7 +317,7 @@
             position: relative;
             width: 100%;
             /* ⬇️ السطرين دول بيجبروا الكارت يفتح بنسبة 4 في 5 بالظبط ⬇️ */
-            aspect-ratio: 4 / 5 !important;
+            aspect-ratio: 9 / 16 !important;
             height: auto !important;
             /* لغينا الارتفاع الثابت عشان الأبعاد تتظبط أوتوماتيك */
             overflow: hidden;
@@ -991,17 +991,20 @@
                 font-size: 18px !important;
             }
 
-            #productsDisplay {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 8px !important;
-                padding: 5px !important;
-            }
+          /* التظبيط الصارم لشبكة المنتجات في الصفحة الرئيسية للموبايل */
+    #productsDisplay {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* كرتين جنب بعض */
+        gap: 12px !important; /* مسافة شيك ومريحة بين الكروت */
+        padding: 10px 5px !important; /* مساحة أمان من الجوانب */
+    }
 
-            .p-card {
-                border: 1px solid var(--border);
-                border-radius: 5px;
-                overflow: hidden;
-            }
+    .p-card { 
+        border: 1px solid var(--border); 
+        border-radius: 8px; /* انحناء بسيط وكول للكارت زي البراندات */
+        overflow: hidden; 
+        background: #ffffff;
+    }
 
             .img-wrapper {
                 height: 180px !important;
