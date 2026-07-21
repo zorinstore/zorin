@@ -421,7 +421,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const ADMIN_EMAIL = "zorinstore2026@gmail.com";
+        const ADMIN_EMAIL = ["zorinstore2026@gmail.com","mediabuyer@gmail.com"];
 
         let originalPrice = 0;
         let finalPrice = 0;
@@ -429,7 +429,7 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                if (user.email === ADMIN_EMAIL) {
+                if (adminEmail.includes(user.email)) {
                     console.log("Welcome Admin");
                     document.body.style.opacity = "1";
                 } else {
