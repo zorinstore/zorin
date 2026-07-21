@@ -71,7 +71,7 @@
 
     // وظيفة التحويل الذكي
     function redirectUser(user) {
-        if (user.email === adminEmail) {
+        if (adminEmail.includes(user.email)) {
             window.location.href = "admin.html"; // لو أدمن يروح لوحة التحكم
         } else {
             window.location.href = "index.html"; // لو عميل يروح الرئيسية
