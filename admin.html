@@ -429,7 +429,7 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                if (adminEmail.includes(user.email)) {
+                if (ADMIN_EMAIL.includes(user.email)) {
                     console.log("Welcome Admin");
                     document.body.style.opacity = "1";
                 } else {
