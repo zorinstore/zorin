@@ -34,12 +34,10 @@
         header {
             padding: 10px 5%;
             position: fixed !important;
-            /* ثابت دايماً أثناء السكرول */
             top: 0;
             left: 0;
             width: 100%;
             background: transparent !important;
-            /* شفاف تماماً في البداية */
             box-shadow: none !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
             z-index: 9999 !important;
@@ -51,22 +49,18 @@
             transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
-        /* الكلاس اللي بيتضاف بالجافا سكريبت عند السكرول */
         header.header-scrolled {
             background: #ffffff !important;
-            /* خلفية بيضاء للهيدر */
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
             border-bottom: 1px solid #f0f0f0 !important;
         }
 
-        /* الكلمة اللي تحت اللوجو والأيقونات: أبيض في الوضع الشفاف */
         header:not(.header-scrolled) .logo,
         header:not(.header-scrolled) .icon-btn,
         header:not(.header-scrolled) i {
             color: #ffffff !important;
         }
 
-        /* الكلمة اللي تحت اللوجو والأيقونات: أسود لما الهيدر يقلب أبيض */
         header.header-scrolled .logo,
         header.header-scrolled .icon-btn,
         header.header-scrolled i {
@@ -84,7 +78,6 @@
             gap: 2px;
         }
 
-        /* اللوجو (الصورة) يفضل طبيعي بدون أي تغيير في ألوانه */
         .brand-center img {
             width: 65px;
             height: 65px;
@@ -129,7 +122,6 @@
             height: 100dvh !important;
             padding: 10 10px !important;
             align-items: flix-start !important;
-         
             justify-content: flix-start !important;
             text-align: flix-start;
         }
@@ -137,12 +129,10 @@
         .hero-content {
             width: 100%;
             margin-top: 40px;
-            /* تعويض مساحة الهيدر */
         }
 
         .hero-title {
             font-size: 2rem !important;
-            /* حجم متناسق مع الموبايل */
         }
 
         .hero-btns {
@@ -152,20 +142,14 @@
 
         .hero-btn-white {
             width: 80% !important;
-            /* زرار شوب ناو عريض وممتاز للضغط */
             margin: 0 auto;
         }
 
-        /* ==========================================================================
-       3. تنسيق قسم الـ Hero Section (جاهز ومؤمن وقت ما تضيف الـ HTML بتاعه)
-       ========================================================================== */
         .hero-section {
             position: relative;
             width: 100%;
             height: 100vh;
-            /* طول الشاشة بالكامل */
             height: 100dvh;
-            /* طول الشاشة الديناميكي للموبايل لمنع مشاكل المتصفحات */
             background: url('Photo.jpeg') no-repeat center center/cover;
             display: flex;
             align-items: center;
@@ -183,7 +167,6 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.45) !important;
-            /* زيادة التعتيم قليلاً لتبرز الكلمات */
             z-index: 1;
         }
 
@@ -290,9 +273,6 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* ==========================================================================
-       4. كروت المنتجات والأسهم (Product Cards & Navigation)
-       ========================================================================== */
         .container {
             max-width: 1200px;
             margin: 40px auto;
@@ -318,17 +298,14 @@
             width: 100%;
             aspect-ratio: 1 / 1 !important;
             height: auto !important;
-            /* لغينا الارتفاع الثابت عشان الأبعاد تتظبط أوتوماتيك */
             overflow: hidden;
             background-color: #f7f7f7;
-            /* خلفية هادية تظهر لو الصورة لسه بتحمل */
         }
 
         .p-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* الكلمة دي بتخلي الصورة تتملي جوة المربع من غير ما تمط */
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
@@ -337,10 +314,8 @@
             text-align: center;
         }
 
-        /* منع الأسهم من الظهور العشوائي */
         .img-nav-btn {
             display: none !important;
-            /* إخفاء تام */
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -357,13 +332,11 @@
             transition: opacity 0.3s;
         }
 
-        /* تظهر فقط عند التحويم على كارت يحتوي فعلياً على صور متعددة */
         .p-card.has-multiple-images:hover .img-nav-btn {
             opacity: 1;
             display: flex !important;
         }
 
-        /* تظهر فقط عند تحويم الماوس وإذا كان الكارت يحتوي على صور متعددة */
         .p-card:hover .has-multiple-images .img-nav-btn {
             opacity: 1;
             display: flex !important;
@@ -414,9 +387,6 @@
             color: #000;
         }
 
-        /* ==========================================================================
-       5. السايد بار والسلة والمودال (Drawers, Cart & Modals)
-       ========================================================================== */
         .sidebar {
             position: fixed;
             top: 0;
@@ -656,32 +626,6 @@
             box-sizing: border-box;
         }
 
-        @keyframes shakeCart {
-            0% {
-                transform: scale(1);
-            }
-
-            25% {
-                transform: scale(1.2) rotate(15deg);
-            }
-
-            50% {
-                transform: scale(1.2) rotate(-15deg);
-            }
-
-            75% {
-                transform: scale(1.2) rotate(15deg);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .shake-it {
-            animation: shakeCart 0.5s ease-in-out;
-        }
-
         .product-images-slider {
             display: flex;
             overflow-x: auto;
@@ -703,7 +647,6 @@
 
         .slider-btn {
             display: none;
-            /* مخفية تماماً ولا تظهر إلا جافا سكربت جوة المودال الخاص بها */
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -723,9 +666,6 @@
             display: flex !important;
         }
 
-        /* ==========================================================================
-       6. بريلودر التحميل والوضع الداكن (Preloader & Dark Mode)
-       ========================================================================== */
         #preloader {
             position: fixed;
             top: 0;
@@ -778,7 +718,6 @@
             border-radius: 50%;
             position: relative;
             z-index: 2;
-            animation: snakeAction 2.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
         }
 
         .aura {
@@ -791,7 +730,6 @@
             background: #fff;
             filter: blur(30px);
             opacity: 0.2;
-            animation: auraPulse 1.5s infinite alternate;
         }
 
         .brand-text {
@@ -952,9 +890,6 @@
             color: #fff;
         }
 
-        /* ==========================================================================
-       7. التوافق التام مع الشاشات الصغيرة للموبايل (Media Queries)
-       ========================================================================== */
         @media (max-width: 768px) {
             header {
                 padding: 10px 3% !important;
@@ -990,20 +925,19 @@
                 font-size: 18px !important;
             }
 
-          /* التظبيط الصارم لشبكة المنتجات في الصفحة الرئيسية للموبايل */
-    #productsDisplay {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* كرتين جنب بعض */
-        gap: 12px !important; /* مسافة شيك ومريحة بين الكروت */
-        padding: 10px 5px !important; /* مساحة أمان من الجوانب */
-    }
+            #productsDisplay {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+                padding: 10px 5px !important;
+            }
 
-    .p-card { 
-        border: 1px solid var(--border); 
-        border-radius: 8px; /* انحناء بسيط وكول للكارت زي البراندات */
-        overflow: hidden; 
-        background: #ffffff;
-    }
+            .p-card {
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                overflow: hidden;
+                background: #ffffff;
+            }
 
             .img-wrapper {
                 height: 180px !important;
@@ -1040,11 +974,11 @@
 
     <div id="overlay" class="overlay" onclick="closeAllSidebars()"></div>
     <div style="position: relative;">
-        <div class="product-images-slider" id="mainImageContainer">
-        </div>
+        <div class="product-images-slider" id="mainImageContainer"></div>
         <button class="slider-btn prev-btn" onclick="moveSlider(-1)"><i class="fas fa-chevron-left"></i></button>
         <button class="slider-btn next-btn" onclick="moveSlider(1)"><i class="fas fa-chevron-right"></i></button>
     </div>
+
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-header">
             <h3>عربة التسوق</h3>
@@ -1062,7 +996,6 @@
         <input type="tel" id="custPhone" placeholder="رقم الموبايل (واتساب + مكالمات)">
         <input type="text" id="custAddress" placeholder="العنوان بالتفصيل (المحافظة/المنطقة/الشارع)">
 
-        <!-- ===== حقل البروموكود ===== -->
         <div style="margin: 15px 0;">
             <label style="display:block; font-size:14px; color:#666; margin-bottom:5px;">كود الخصم</label>
             <input type="text" id="checkoutPromoInput" placeholder="ادخل كود الخصم إن وجد"
@@ -1072,9 +1005,8 @@
             <div id="checkoutPromoMsg" style="font-size:13px; color:green; margin-top:3px;"></div>
         </div>
 
-        <!-- السعر النهائي -->
         <div style="font-weight:bold; font-size:16px; margin-bottom:15px;">
-            السعر الإجمالي: <span id="checkoutTotal">0 EGP</span>
+            <div id="checkoutTotal">0 EGP</div>
         </div>
 
         <button class="btn-black" style="width:100%" id="confirmBtn" onclick="confirmOrder()">تأكيد الطلب</button>
@@ -1123,8 +1055,7 @@
         <div class="side-section">
             <div class="cart-preview-box" onclick="toggleCart(true); closeAllSidebars();"
                 style="position: relative; display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 15px; background: #f9f9f9; border-radius: 8px;">
-                <div>
-                </div>
+                <div></div>
             </div>
 
             <div class="side-footer" style="margin-top:auto; padding: 20px 0;">
@@ -1165,9 +1096,7 @@
             </button>
         </div>
     </div>
-    <!-- ==========================================================================
-     قسم الـ Hero Section الجديد
-     ========================================================================== -->
+
     <section class="hero-section">
         <div class="hero-content">
             <div class="subtitle-wrapper">
@@ -1192,11 +1121,7 @@
                 </button>
             </div>
         </div>
-
-
     </section>
-
-    <div id="overlay" class="overlay" onclick="closeAll()"></div>
 
     <div class="container">
         <div id="productsDisplay" class="products-grid"></div>
@@ -1269,12 +1194,10 @@
     </footer>
 
     <script type="module">
-        // 1. استيراد المكتبات المطلوبة من النسخة الجديدة
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, where, getDocs, addDoc, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // 2. بيانات مشروع ZORIN STORE 2026 الجديد
         const firebaseConfig = {
             apiKey: "AIzaSyAxeYGtXRJLoKguWleXn89BAEMt7wLYAVY",
             authDomain: "zorin-store-2026.firebaseapp.com",
@@ -1286,200 +1209,300 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+
+        let cart = JSON.parse(localStorage.getItem('zorin_cart')) || [];
+        let tempItem = null;
+        let checkoutType = "cart"; // "single" أو "cart"
+        let appliedPromoCode = null;
         let currentUser = null;
 
-        // --- نظام السلة الموحد ---
-        let cart = JSON.parse(localStorage.getItem('zorin_cart')) || [];
-
+        // --- تحديث السلة والعرض ---
         window.updateCartUI = () => {
-            // 1. حفظ البيانات
             localStorage.setItem('zorin_cart', JSON.stringify(cart));
-
-            // 2. تحديث العدادات (البادج والسايدبار)
+            
             const badge = document.getElementById('cartBadge');
-            const sidebarCount = document.getElementById('cartCountSidebar');
             if (badge) badge.innerText = cart.length;
-            if (sidebarCount) sidebarCount.innerText = cart.length;
-
-            // 3. قائمة المنتجات
+            
             const list = document.getElementById('cartItemsList');
             if (list) {
                 if (cart.length === 0) {
                     list.innerHTML = `<p style="text-align:center; padding:20px; font-size:12px; color:#999;">العربة فارغة</p>`;
                 } else {
                     list.innerHTML = cart.map((item, index) => `
-                <div class="cart-item">
-                    <img src="${item.image}">
-                    <div style="flex-grow:1">
-                        <div style="font-size:14px; font-weight:bold;">${item.name}</div>
-                        <small>${item.color} | ${item.size} | x${item.qty}</small><br>
-                        <b>${(item.salePrice || item.price) * item.qty} EGP</b>
-                    </div>
-                    <i class="fas fa-trash" onclick="removeItem(${index})" style="color:red; cursor:pointer;"></i>
-                </div>
-            `).join('');
+                        <div class="cart-item">
+                            <img src="${item.image}">
+                            <div style="flex-grow:1">
+                                <div style="font-size:14px; font-weight:bold;">${item.name}</div>
+                                <small>${item.color || ''} | ${item.size || ''} | x${item.qty}</small><br>
+                                <b>${(item.salePrice || item.price) * item.qty} EGP</b>
+                            </div>
+                            <i class="fas fa-trash" onclick="removeItem(${index})" style="color:red; cursor:pointer;"></i>
+                        </div>
+                    `).join('');
                 }
             }
 
-            // 4. حساب الإجمالي
-            const total = cart.reduce((sum, item) => sum + (Number(item.salePrice || item.price) * Number(item.qty)), 0);
-            const totalEl = document.getElementById('cartTotal');
-            if (totalEl) totalEl.innerText = "الإجمالي: " + total + " EGP";
+            const itemsTotal = cart.reduce((sum, item) => sum + (Number(item.salePrice || item.price) * Number(item.qty)), 0);
+            const shippingFee = itemsTotal > 0 ? 50 : 0;
+            const grandTotal = itemsTotal + shippingFee;
 
-            // 5. تصفير الكوبون عند التعديل (لحماية الحسابات)
-            window.discountPercent = 0;
-            window.appliedCodeName = "";
+            const cartTotalElem = document.getElementById('cartTotal');
+            if (cartTotalElem) {
+                cartTotalElem.innerHTML = `
+                    <div style="font-size:13px; color:#666; font-weight:normal; margin-bottom:4px;">
+                        سعر المنتجات: ${itemsTotal} EGP
+                    </div>
+                    <div style="font-size:13px; color:#666; font-weight:normal; margin-bottom:8px;">
+                        مصاريف الشحن: ${shippingFee} EGP (جميع المحافظات)
+                    </div>
+                    <div style="font-size:16px; font-weight:bold; border-top: 1px dashed #ccc; padding-top: 8px;">
+                        الإجمالي النهائي: ${grandTotal} EGP
+                    </div>
+                `;
+            }
+
+            appliedPromoCode = null;
             if (document.getElementById('checkoutPromoInput')) document.getElementById('checkoutPromoInput').value = "";
             if (document.getElementById('checkoutPromoMsg')) document.getElementById('checkoutPromoMsg').innerText = "";
-
-            // 6. تحديث السعر النهائي في صفحة الدفع
-            const checkoutTotalEl = document.getElementById('checkoutTotal');
-            if (checkoutTotalEl) checkoutTotalEl.innerText = `${total} EGP`;
+            
+            updateCheckoutTotal();
         };
 
-        // ⚡ حل مشكلة السلة صفر: ربط الاسم القديم بالجديد ⚡
         window.updateCart = window.updateCartUI;
 
-        // استدعاء الدالة فور تحميل الصفحة عشان السلة تظهر
-        window.updateCartUI();
-        window.removeItemFromCart = (index) => {
-            cart.splice(index, 1);
-            updateCartUI();
-        };
-
-
-        // تأكيد وظيفة الـ Toggle عشان السايد بار يفتحها
-        window.toggleCart = (show) => {
-            const drawer = document.getElementById('cartDrawer');
-            const overlay = document.getElementById('overlay');
-
-            if (show) {
-                // نقفل أي سايد بار مفتوح الأول
-                document.getElementById('sidebar').classList.remove('active');
-                document.getElementById('userSidebar').classList.remove('active');
-
-                drawer.classList.add('open');
-                overlay.classList.add('show');
-                overlay.style.display = 'block'; // للتأكيد إن الأوفرلاي ظهر
-                window.updateCartUI();
-            } else {
-                drawer.classList.remove('open');
-                overlay.classList.remove('show');
-                overlay.style.display = 'none';
-            }
-        };
-
-        window.removeItemFromCart = (index) => {
-            cart.splice(index, 1);
+        window.removeItem = (i) => {
+            cart.splice(i, 1);
             window.updateCartUI();
         };
 
-        window.openCheckout = () => {
-            if (cart.length === 0) return alert("العربة فارغة");
+        window.toggleCart = (show) => {
+            const drawer = document.getElementById('cartDrawer');
+            const overlay = document.getElementById('overlay');
+            if (show) {
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('userSidebar').classList.remove('active');
+                if (drawer) drawer.classList.add('open');
+                if (overlay) {
+                    overlay.classList.add('show', 'active');
+                    overlay.style.display = 'block';
+                }
+                window.updateCartUI();
+            } else {
+                if (drawer) drawer.classList.remove('open');
+                if (overlay) {
+                    overlay.classList.remove('show', 'active');
+                    overlay.style.display = 'none';
+                }
+            }
+        };
+
+        function calculateTotal() {
+            let total = 0;
+            if (checkoutType === "single" && tempItem) {
+                const basePrice = Number(tempItem.salePrice || tempItem.price || 0);
+                total = basePrice * (tempItem.qty || 1);
+            } else if (cart.length > 0) {
+                cart.forEach(item => {
+                    total += Number(item.salePrice || item.price || 0) * Number(item.qty || 1);
+                });
+            }
+            return total;
+        }
+
+        function updateCheckoutTotal() {
+            let itemsTotal = calculateTotal();
+            const shippingFee = itemsTotal > 0 ? 50 : 0;
+            let discountedItemsTotal = itemsTotal;
+            const msgElem = document.getElementById('checkoutPromoMsg');
+
+            if (appliedPromoCode) {
+                if (appliedPromoCode.discountType === "percentage") {
+                    const discount = (itemsTotal * appliedPromoCode.discountValue) / 100;
+                    discountedItemsTotal = itemsTotal - discount;
+                    if (msgElem) msgElem.innerText = `تم خصم ${appliedPromoCode.discountValue}% (${discount.toFixed(2)} EGP).`;
+                } else if (appliedPromoCode.discountType === "fixed") {
+                    const discount = appliedPromoCode.discountValue;
+                    discountedItemsTotal = itemsTotal - discount;
+                    if (discountedItemsTotal < 0) discountedItemsTotal = 0;
+                    if (msgElem) msgElem.innerText = `تم خصم ${discount.toFixed(2)} EGP.`;
+                }
+            } else {
+                if (msgElem && !msgElem.innerText.includes("كود غير صالح")) {
+                    msgElem.innerText = "";
+                }
+            }
+
+            const finalGrandTotal = discountedItemsTotal + shippingFee;
+            const checkoutTotalElem = document.getElementById('checkoutTotal');
+
+            if (checkoutTotalElem) {
+                checkoutTotalElem.innerHTML = `
+                    <div style="font-size: 13px; color: #555; font-weight: normal; margin-bottom: 4px;">
+                        سعر المنتجات: ${discountedItemsTotal.toFixed(2)} EGP
+                    </div>
+                    <div style="font-size: 13px; color: #555; font-weight: normal; margin-bottom: 6px;">
+                        مصاريف الشحن: ${shippingFee} EGP
+                    </div>
+                    <div style="font-size: 16px; font-weight: bold; color: #000; border-top: 1px solid #eee; padding-top: 6px;">
+                        الإجمالي الكلي: ${finalGrandTotal.toFixed(2)} EGP
+                    </div>
+                `;
+            }
+        }
+
+        window.openCheckout = (item = null, type = "cart") => {
+            tempItem = item;
+            checkoutType = type;
+            appliedPromoCode = null;
+
+            if (type === "cart" && cart.length === 0) return alert("العربة فارغة!");
+
+            if (document.getElementById('checkoutPromoInput')) document.getElementById('checkoutPromoInput').value = "";
+            if (document.getElementById('checkoutPromoMsg')) document.getElementById('checkoutPromoMsg').innerText = "";
+
             document.getElementById('checkoutModal').style.display = 'block';
+            document.getElementById('overlay').classList.add('active', 'show');
             window.toggleCart(false);
+            updateCheckoutTotal();
         };
 
         window.closeCheckout = () => {
             document.getElementById('checkoutModal').style.display = 'none';
-            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('overlay').classList.remove('active', 'show');
         };
 
         window.confirmOrder = async () => {
-
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddress').value;
+            const shippingFee = 50;
 
-            if (!name || !phone || !addr) return alert("أكمل البيانات");
+            if (!name || !phone || !addr) return alert("أكمل البيانات المطلوب إدخالها");
+
+            let orderItems = tempItem ? [tempItem] : [...cart];
+            if (orderItems.length === 0) return alert("لا توجد منتجات في السلة");
 
             const btn = document.getElementById('confirmBtn');
-
-            const originalTotal = calculateTotal();
-
-            let discountValue = 0;
-            let promoUsed = null;
-            let promoType = null;
-            let promoValue = 0;
-
-            if (appliedPromoCode) {
-
-                promoUsed = document.getElementById('checkoutPromoInput').value.trim().toUpperCase() || null;
-                promoType = appliedPromoCode.discountType || null;
-                promoValue = Number(appliedPromoCode.discountValue) || 0;
-
-                if (promoType === "percentage") {
-                    discountValue = (originalTotal * promoValue) / 100;
-                }
-                else if (promoType === "fixed") {
-                    discountValue = promoValue;
-                }
-
-                if (discountValue > originalTotal) {
-                    discountValue = originalTotal;
-                }
-            }
-
-            const finalTotal = originalTotal - discountValue;
-
             btn.innerText = "جاري التأكيد...";
             btn.disabled = true;
 
             try {
+                const originalTotal = orderItems.reduce((sum, item) => sum + ((item.salePrice || item.price) * item.qty), 0);
+                let discountValue = 0;
+                let promoUsed = "None";
+                let promoType = "None";
+                let promoValue = 0;
+
+                if (appliedPromoCode) {
+                    promoUsed = document.getElementById('checkoutPromoInput').value.trim().toUpperCase() || "None";
+                    promoType = appliedPromoCode.discountType || "None";
+                    promoValue = Number(appliedPromoCode.discountValue) || 0;
+
+                    if (promoType === "percentage") discountValue = (originalTotal * promoValue) / 100;
+                    else if (promoType === "fixed") discountValue = promoValue;
+
+                    if (discountValue > originalTotal) discountValue = originalTotal;
+                }
+
+                const finalTotal = (originalTotal - discountValue) + shippingFee;
 
                 await addDoc(collection(db, "orders"), {
-                    customer: {
-                        name,
-                        phone,
-                        address: addr,
-                        email: currentUser ? currentUser.email : "Guest"
-                    },
-
-                    items: cart,
-
-                    originalTotal: originalTotal,
-                    promoUsed: promoUsed || "None",
-                    promoType: promoType || "None",
-                    promoValue: promoValue || 0,
-                    discountValue: discountValue || 0,
+                    customer: { name, phone, address: addr, email: currentUser?.email || "Guest" },
+                    items: orderItems,
+                    originalTotal,
+                    promoUsed,
+                    promoType,
+                    promoValue,
+                    discountValue,
+                    shippingFee,
                     total: finalTotal,
-
                     status: "New",
                     createdAt: new Date()
                 });
 
-                alert("تم استلام طلبك بنجاح!");
+                // تحديث كميات المخزون
+                for (const item of orderItems) {
+                    if (item.id) {
+                        const productRef = doc(db, "products", item.id);
+                        const pSnap = await getDoc(productRef);
+                        if (pSnap.exists()) {
+                            const pData = pSnap.data();
+                            if (pData.variants) {
+                                const updatedVariants = pData.variants.map(v => {
+                                    if (v.color === item.color && v.stock && item.size in v.stock) {
+                                        let currentStock = Number(v.stock[item.size]) || 0;
+                                        let orderedQty = Number(item.qty) || 1;
+                                        v.stock[item.size] = Math.max(0, currentStock - orderedQty);
+                                    }
+                                    return v;
+                                });
+                                await updateDoc(productRef, { variants: updatedVariants });
+                            }
+                        }
+                    }
+                }
 
+                alert("تم استلام طلبك بنجاح!");
                 cart = [];
                 localStorage.removeItem('zorin_cart');
                 window.updateCartUI();
                 window.closeCheckout();
-
             } catch (error) {
                 console.error("Order Error:", error);
-                alert("حدث خطأ أثناء إرسال الطلب");
+                alert("حدث خطأ أثناء تنفيذ الطلب");
+            } finally {
                 btn.innerText = "تأكيد الطلب";
                 btn.disabled = false;
             }
         };
+
+        async function loadPromoCodes() {
+            const promoMap = {};
+            try {
+                const q = query(collection(db, "promoCodes"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+                snap.forEach(docSnap => {
+                    const promo = docSnap.data();
+                    promoMap[promo.code.trim().toUpperCase()] = {
+                        discountType: promo.discountType,
+                        discountValue: Number(promo.discountValue)
+                    };
+                });
+            } catch (err) {
+                console.error("Error loading promo codes:", err);
+            }
+            return promoMap;
+        }
+
+        document.getElementById('checkoutApplyPromo').addEventListener('click', async () => {
+            const codeInput = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
+            const promoCodes = await loadPromoCodes();
+            const msgElem = document.getElementById('checkoutPromoMsg');
+
+            if (promoCodes[codeInput]) {
+                appliedPromoCode = promoCodes[codeInput];
+                msgElem.innerText = `تم تطبيق خصم ${appliedPromoCode.discountType === "percentage" ? appliedPromoCode.discountValue + "%" : appliedPromoCode.discountValue + " EGP"}`;
+            } else {
+                appliedPromoCode = null;
+                msgElem.innerText = "كود غير صالح";
+            }
+
+            updateCheckoutTotal();
+        });
 
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             const navName = document.getElementById('navUserName');
 
             if (user) {
-                // 1. التحقق من هوية الأدمن (أهم خطوة)
                 if (user.email === "zorinstore2026@gmail.com") {
-                    // لو أنت الأدمن وفاتح الصفحة الرئيسية، يبعتك فوراً للأدمن
                     window.location.href = 'admin.html';
-                    return; // نوقف التنفيذ هنا عشان ميكملش باقي الكود
+                    return;
                 }
 
-                // 2. تحديث واجهة المستخدم للزبون العادي
                 const name = user.displayName || user.email.split('@')[0];
                 if (navName) navName.innerText = name;
 
-                // لو عندك عناصر الترحيب في الـ Sidebar
                 const welcomeName = document.getElementById('welcomeName');
                 const userEmailTxt = document.getElementById('userEmailTxt');
                 if (welcomeName) welcomeName.innerText = "Hi, " + name;
@@ -1491,7 +1514,6 @@
             }
         });
 
-        // --- وظيفة جلب الطلبات (كودك الأصلي) ---
         async function loadUserOrders(userEmail) {
             const list = document.getElementById('ordersList');
             if (!list) return;
@@ -1500,8 +1522,8 @@
                 const snap = await getDocs(q);
                 list.innerHTML = "";
                 let found = 0;
-                snap.forEach(doc => {
-                    const order = doc.data();
+                snap.forEach(docSnap => {
+                    const order = docSnap.data();
                     const orderEmail = order.customer?.email || order.email;
                     if (orderEmail === userEmail) {
                         found++;
@@ -1509,7 +1531,7 @@
                         list.innerHTML += `
                         <div class="order-card" style="border-left: 4px solid #000;">
                             <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                                <b>ID: #${doc.id.slice(0, 8)}</b>
+                                <b>ID: #${docSnap.id.slice(0, 8)}</b>
                                 <span style="color:green; font-weight:bold;">${order.status || 'New'}</span>
                             </div>
                             <div style="font-size:11px; line-height:1.4;">
@@ -1523,7 +1545,6 @@
             } catch (err) { console.error(err); }
         }
 
-        // --- وظائف الواجهة (كودك الأصلي) ---
         window.handleUserIcon = () => {
             if (currentUser) window.toggleSidebar('userSidebar');
             else location.href = 'login.html';
@@ -1537,11 +1558,10 @@
         window.closeAllSidebars = () => {
             const sidebars = document.querySelectorAll('.sidebar');
             sidebars.forEach(s => s.classList.remove('active'));
-            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show', 'active');
             window.toggleCart(false);
         };
 
-        // ربط الـ overlay بالوظيفة
         document.getElementById('overlay').onclick = window.closeAllSidebars;
 
         window.confirmLogout = () => {
@@ -1553,9 +1573,9 @@
             if (!display) return;
             display.innerHTML = "";
 
-            snap.forEach(doc => {
-                const p = doc.data();
-                const pid = doc.id;
+            snap.forEach(docSnap => {
+                const p = docSnap.data();
+                const pid = docSnap.id;
                 const hasSale = p.salePrice && Number(p.salePrice) < Number(p.price);
                 let salePercent = 0;
                 if (hasSale) {
@@ -1566,9 +1586,9 @@
 
                 display.innerHTML += `
             <div class="p-card" data-aos="fade-up" style="position:relative;"> 
-${hasSale ? `<span class="sale-badge">SALE -${salePercent}%</span>` : ''}                <div class="img-wrapper">
+                ${hasSale ? `<span class="sale-badge">SALE -${salePercent}%</span>` : ''}
+                <div class="img-wrapper">
                     <img src="${images[0]}" class="p-img" id="img-${pid}" onclick="location.href='product.html?id=${pid}'">
-                    
                     ${images.length > 1 ? `
                         <button class="img-nav-btn prev-btn" onclick="changeImage(event, '${pid}', ${imagesJson}, -1)">
                             <i class="fas fa-chevron-left"></i>
@@ -1587,7 +1607,7 @@ ${hasSale ? `<span class="sale-badge">SALE -${salePercent}%</span>` : ''}       
                 </div>
             </div>`;
             });
-            // سطر مهم لتشغيل الأنيميشن بعد تحميل الصور
+
             if (window.AOS) AOS.refresh();
         }
 
@@ -1621,12 +1641,10 @@ ${hasSale ? `<span class="sale-badge">SALE -${salePercent}%</span>` : ''}       
             }
         };
 
-        // التشغيل المبدئي
         window.onload = () => {
             const preloader = document.getElementById('preloader');
             setTimeout(() => { if (preloader) preloader.classList.add('loaded'); }, 2000);
 
-            // تشغيل الأنيميشن
             AOS.init({
                 duration: 1000,
                 once: true,
@@ -1636,158 +1654,29 @@ ${hasSale ? `<span class="sale-badge">SALE -${salePercent}%</span>` : ''}       
             window.filterCat('all');
             window.updateCartUI();
         };
-        let checkoutDiscount = 0;
-        let appliedPromoCode = null;
-        let checkoutType = null; // "single" أو "cart"
 
-
-        async function loadPromoCodes() {
-            const promoMap = {};
-            try {
-                const q = query(collection(db, "promoCodes"), orderBy("createdAt", "desc"));
-                const snap = await getDocs(q);
-                snap.forEach(docSnap => {
-                    const promo = docSnap.data();
-                    promoMap[promo.code.trim().toUpperCase()] = {
-                        discountType: promo.discountType,
-                        discountValue: promo.discountValue
-                    };
-                });
-            } catch (err) {
-                console.error("Error loading promo codes:", err);
-            }
-            return promoMap;
-        }
-
-        function calculateTotal() {
-            let total = 0;
-
-            if (checkoutType === "single" && tempItem) {
-                // المنتج الفردي
-                const basePrice = Number(tempItem.salePrice || tempItem.price || 0);
-                total = basePrice * (tempItem.qty || 1);
-            } else {
-                // كل منتجات العربة
-                cart.forEach(item => {
-                    total += Number(item.salePrice || item.price || 0) * Number(item.qty || 1);
-                });
-            }
-
-            return total;
-        }
-
-
-        function updateCheckoutTotal() {
-            let total = calculateTotal();
-            let finalTotal = total;
-            const msgElem = document.getElementById('checkoutPromoMsg');
-
-            if (appliedPromoCode) {
-                // فيه كوبون صحيح
-                if (appliedPromoCode.discountType === "percentage") {
-                    const discount = total * appliedPromoCode.discountValue / 100;
-                    finalTotal = total - discount;
-                    msgElem.innerText = `تم خصم ${appliedPromoCode.discountValue}% (${discount.toFixed(2)} EGP). المبلغ المطلوب: ${finalTotal.toFixed(2)} EGP`;
-                } else if (appliedPromoCode.discountType === "fixed") {
-                    const discount = appliedPromoCode.discountValue;
-                    finalTotal = total - discount;
-                    if (finalTotal < 0) finalTotal = 0;
-                    msgElem.innerText = `تم خصم ${discount.toFixed(2)} EGP. المبلغ المطلوب: ${finalTotal.toFixed(2)} EGP`;
-                }
-            } else {
-                // مفيش كوبون صحيح → ما تمسحش الرسالة لو موجودة
-                if (!msgElem.innerText.includes("كود غير صالح")) {
-                    msgElem.innerText = ""; // امسح الرسالة بس لو مش رسالة خطأ
-                }
-            }
-
-            document.getElementById('checkoutTotal').innerText = finalTotal.toFixed(2) + " EGP";
-        }
-
-
-        document.getElementById('checkoutApplyPromo').addEventListener('click', async () => {
-            const codeInput = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
-            const promoCodes = await loadPromoCodes();
-
-            const msgElem = document.getElementById('checkoutPromoMsg');
-
-            if (promoCodes[codeInput]) {
-                appliedPromoCode = promoCodes[codeInput];
-                msgElem.innerText = `تم تطبيق خصم ${appliedPromoCode.discountType === "percentage" ? appliedPromoCode.discountValue + "%" : appliedPromoCode.discountValue + " EGP"}`;
-            } else {
-                appliedPromoCode = null;
-                msgElem.innerText = "كود غير صالح"; // 🔹 خليها هنا قبل updateCheckoutTotal
-            }
-
-            updateCheckoutTotal(); // هنا السعر يتحدث بدون مسح الرسالة
-        });
-
-
-        function openCheckout(item = null, type = "single") {
-            tempItem = item;          // المنتج الفردي لو Buy Now
-            checkoutType = type;      // "single" أو "cart"
-            checkoutDiscount = 0;
-            appliedPromoCode = null;
-
-            document.getElementById('checkoutPromoInput').value = "";
-            document.getElementById('checkoutPromoMsg').innerText = "";
-            document.getElementById('checkoutModal').style.display = 'block';
-            document.getElementById('overlay').classList.add('active');
-
-            updateCheckoutTotal(); // تحديث الإجمالي بعد فتح الشحن
-        }
         window.addEventListener('scroll', function () {
             const header = document.querySelector('header');
-
-            // لو نزل المستخدم أكتر من 50 بكسل
             if (window.pageYOffset > 50 || window.scrollY > 50) {
                 header.classList.add('header-scrolled');
             } else {
                 header.classList.remove('header-scrolled');
             }
         });
-
-        // تأكيد تشغيل الدالة عند تحميل الصفحة للتأكد من وضع الهيدر الحالي
-        document.addEventListener('DOMContentLoaded', function () {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.classList.add('header-scrolled');
-            }
-        });
-
-        // دالة النزول للمنتجات بسلاسة عند الضغط على زرار تسوق الآن
-        function scrollToProducts() {
-            const container = document.querySelector('.container');
-            if (container) {
-                container.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
     </script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({
-            duration: 1000, // مدة الحركة (ثانية واحدة)
-            once: true,     // الحركة تحصل مرة واحدة وأنت نازل بس
-        });
-        // حط دي في آخر ملف index.html قبل قفلة الـ body مباشرة
-
         window.changeImage = (event, productId, images, direction) => {
-            event.stopPropagation(); // عشان ما يفتحش صفحة المنتج
+            event.stopPropagation();
             const imgElement = document.getElementById(`img-${productId}`);
             if (!imgElement) return;
 
-            // نجيب المسار الحالي للصورة
             let currentSrc = imgElement.src;
-
-            // ندور على ترتيب الصورة الحالية في المصفوفة
             let currentIndex = images.findIndex(img => currentSrc.includes(img));
 
             if (currentIndex === -1) currentIndex = 0;
-
-            // نحسب الصورة اللي عليها الدور
             let nextIndex = (currentIndex + direction + images.length) % images.length;
 
-            // تغيير الصورة مع تأثير خفيف
             imgElement.style.opacity = '0.6';
             imgElement.src = images[nextIndex];
             setTimeout(() => {
@@ -1795,21 +1684,15 @@ ${hasSale ? `<span class="sale-badge">SALE -${salePercent}%</span>` : ''}       
                 imgElement.style.opacity = '1';
             }, 100);
         };
-        // داخل دالة loadProduct بعد الحصول على pData
-        const slider = document.getElementById('mainImageContainer');
-        slider.innerHTML = pData.images.map(img => `<img src="${img}" alt="product">`).join('');
 
-        // دالة تحريك الأسهم
         window.moveSlider = (direction) => {
             const slider = document.getElementById('mainImageContainer');
-            const scrollAmount = slider.clientWidth; // عرض الصورة الواحدة
+            const scrollAmount = slider.clientWidth;
             slider.scrollBy({
                 left: direction * scrollAmount,
                 behavior: 'smooth'
             });
         };
-
-
     </script>
 </body>
 
