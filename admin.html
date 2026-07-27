@@ -421,7 +421,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const ADMIN_EMAIL = ["zorinstore2026@gmail.com","mediabuyer@gmail.com"];
+        const ADMIN_EMAIL = "zorinstore2026@gmail.com";
 
         let originalPrice = 0;
         let finalPrice = 0;
@@ -429,7 +429,7 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                if (ADMIN_EMAIL.includes(user.email)) {
+                if (user.email === ADMIN_EMAIL) {
                     console.log("Welcome Admin");
                     document.body.style.opacity = "1";
                 } else {
@@ -581,21 +581,24 @@
                 const o = d.data();
                 const oid = d.id;
 
-                // حساب السعر قبل الخصم
                 let originalTotal = (o.items || []).reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
 
-                // حساب قيمة الخصم
-                let discountValue = 0;
-                if (o.promoUsed && o.promoType && o.promoValue) {
-                    if (o.promoType === "fixed") {
-                        discountValue = o.promoValue;
-                    } else if (o.promoType === "percentage") {
-                        discountValue = Math.round(originalTotal * (o.promoValue / 100));
-                    }
-                }
+// 2. حساب قيمة الخصم لو فيه بروموكود مستخدم
+let discountValue = 0;
+if (o.promoUsed && o.promoType && o.promoValue) {
+    if (o.promoType === "fixed") {
+        discountValue = o.promoValue;
+    } else if (o.promoType === "percentage") {
+        discountValue = Math.round(originalTotal * (o.promoValue / 100));
+    }
+}
 
-                // السعر النهائي بعد الخصم
-                let totalAfterDiscount = originalTotal - discountValue;
+// 3. تحديد تكلفة الشحن (بياخدها من الطلب لو متسجلة، أو بيحسبها 50 افتراضياً)
+let shippingFee = o.shippingFee !== undefined ? Number(o.shippingFee) : 50;
+
+// 4. إجمالي المطلوب دفعه النهائي
+let subTotal = originalTotal - discountValue;
+let grandTotal = subTotal + shippingFee;
 
                 // HTML المنتجات
                 let itemsHtml = (o.items || []).map(item => `
@@ -607,14 +610,12 @@
                     <span>الكمية: ${item.qty || 1} | ${(item.price * (item.qty || 1)).toFixed(2)} EGP</span>
                 </div>
             </div>`).join('');
-
-                // HTML الخصم والسعر النهائي
-                let discountHtml = o.promoUsed ? `
-            <div style="text-decoration:line-through; color:#888;">السعر قبل الخصم: ${originalTotal.toFixed(2)} EGP</div>
-            <div style="color:red;">قيمة الخصم: ${discountValue.toFixed(2)} EGP</div>
-            <div>كود الخصم المستخدم: <b>${o.promoUsed}</b></div>
-        ` : `<div>السعر قبل الخصم: ${originalTotal.toFixed(2)} EGP</div>`;
-
+let discountHtml = (o.promoUsed && discountValue > 0) ? `
+    <div style="text-decoration: line-through; color: #888;">سعر المنتجات: ${originalTotal.toFixed(2)} EGP</div>
+    <div style="color: red; font-weight: bold;">الخصم: -${discountValue.toFixed(2)} EGP</div>
+` : `
+    <div style="color: #333;">سعر المنتجات: ${originalTotal.toFixed(2)} EGP</div>
+`;
                 ordContainer.innerHTML += `
             <div class="glass-card" style="border-right:5px solid #000; margin-bottom:15px; padding:10px;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
@@ -628,12 +629,13 @@
                     <i class="fas fa-phone"></i> ${o.customer.phone}<br>
                     <i class="fas fa-map-marker-alt"></i> ${o.customer.address}
                 </div>
-                <div style="background:#f9f9f9; padding:10px; border-radius:8px;">
-                    ${itemsHtml}
-                    <div style="text-align:left; margin-top:10px; font-size:14px;">
-                        ${discountHtml}
-                        <div style="font-weight:bold; font-size:16px; margin-top:5px;">
-                            المبلغ المطلوب دفعه: ${totalAfterDiscount.toFixed(2)} EGP
+              <div style="background:#f9f9f9; padding:10px; border-radius:8px;">
+        ${itemsHtml}
+        <div style="text-align:right; margin-top:10px; font-size:14px; border-top:1px dashed #ccc; padding-top:10px;">
+            ${discountHtml}
+            <div style="color:#000; font-weight:600; margin: 3px 0;">مصاريف الشحن: <span style="color:#e67e22;">${shippingFee.toFixed(2)} EGP</span></div>
+            <div style="font-weight:bold; font-size:16px; margin-top:8px; color:#000;">
+                المبلغ المطلوب دفعه: <span style="background:#000; color:#fff; padding:3px 8px; border-radius:5px;">${grandTotal.toFixed(2)} EGP</span>
                         </div>
                     </div>
                 </div>
