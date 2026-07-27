@@ -617,17 +617,17 @@
             .container {
                 flex-direction: column;
             }
+
             #productsDisplay {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
-        padding: 5px !important;
-    }
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+                padding: 5px !important;
+            }
         }
 
         #navUserName {
             display: none !important;
-            /* إخفاء كلمة Login أو الاسم من الهيدر */
         }
 
         .nav-icons {
@@ -638,7 +638,6 @@
             width: 100%;
             max-width: 500px;
             aspect-ratio: 1 / 1 !important;
-            /* 👈 غير المقاس هنا */
             height: auto;
             margin-bottom: 20px;
         }
@@ -646,9 +645,7 @@
         .swiper-button-next,
         .swiper-button-prev {
             color: #000 !important;
-            /* لون الأسهم أسود */
             transform: scale(0.6);
-            /* تصغير حجم الأسهم */
         }
 
         .related-section {
@@ -1217,81 +1214,99 @@
             };
 
             window.confirmOrder = async () => {
-                const name = document.getElementById('custName').value;
-                const phone = document.getElementById('custPhone').value;
-                const addr = document.getElementById('custAddress').value;
-                if (!name || !phone || !addr) return alert("أكمل البيانات");
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const addr = document.getElementById('custAddress').value.trim();
+    const shippingFee = 50;
 
-                let orderItems = tempItem ? [tempItem] : [...cart];
-                if (orderItems.length === 0) return alert("لا توجد منتجات");
+    if (!name || !phone || !addr) return alert("الرجاء إكمال كافة البيانات");
 
-                const btn = document.getElementById('confirmBtn');
-                btn.innerText = "جاري التأكيد..."; btn.disabled = true;
+    let orderItems = tempItem ? [tempItem] : [...cart];
+    if (orderItems.length === 0) return alert("لا توجد منتجات في السلة");
 
-                try {
-                    // حساب الإجمالي قبل الخصم
-                    const originalTotal = orderItems.reduce((sum, item) => sum + (Number(item.price) * Number(item.qty)), 0);
+    const btn = document.getElementById('confirmBtn');
+    btn.innerText = "جاري التأكيد..."; 
+    btn.disabled = true;
 
-                    // حساب الخصم لو فيه كود
-                    let discountValue = 0;
-                    let promoUsed = null;
-                    let promoType = null;
-                    let promoValue = 0;
+    try {
+        // 1. حساب الإجمالي قبل الخصم
+        const originalTotal = orderItems.reduce((sum, item) => {
+            const price = Number(item.salePrice || item.price) || 0;
+            return sum + (price * Number(item.qty || 1));
+        }, 0);
 
-                    if (appliedPromoCode) {
-                        promoUsed = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
-                        promoType = appliedPromoCode.discountType;
-                        promoValue = appliedPromoCode.discountValue;
+        // 2. حساب الخصم في حال وجود بروموكود
+        let discountValue = 0;
+        let promoUsed = null;
+        let promoType = null;
+        let promoValue = 0;
 
-                        if (promoType === "percentage") discountValue = originalTotal * promoValue / 100;
-                        else if (promoType === "fixed") discountValue = promoValue;
+        if (appliedPromoCode) {
+            promoUsed = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
+            promoType = appliedPromoCode.discountType;
+            promoValue = Number(appliedPromoCode.discountValue) || 0;
 
-                        if (discountValue > originalTotal) discountValue = originalTotal; // ما يخليش المبلغ سالب
+            if (promoType === "percentage") {
+                discountValue = (originalTotal * promoValue) / 100;
+            } else if (promoType === "fixed") {
+                discountValue = promoValue;
+            }
+
+            if (discountValue > originalTotal) discountValue = originalTotal;
+        }
+
+        // 3. حساب الإجمالي النهائي (بعد الخصم + الشحن)
+        const finalTotal = (originalTotal - discountValue) + shippingFee;
+
+        // 4. حفظ الطلب في Firebase
+        await addDoc(collection(db, "orders"), {
+            customer: { 
+                name, 
+                phone, 
+                address: addr, 
+                email: currentUser?.email || "Guest" 
+            },
+            items: orderItems,
+            originalTotal,
+            promoUsed,
+            promoType,
+            promoValue,
+            discountValue,
+            shippingFee,
+            total: finalTotal,
+            status: "new",
+            createdAt: new Date()
+        });
+
+        // 5. خصم الكميات المشتراه من المخزون
+        for (const item of orderItems) {
+            const productRef = doc(db, "products", item.id);
+            const pSnap = await getDoc(productRef);
+            if (pSnap.exists()) {
+                const pData = pSnap.data();
+                const updatedVariants = pData.variants.map(v => {
+                    if (v.color === item.color && v.stock && item.size in v.stock) {
+                        let currentStock = Number(v.stock[item.size]) || 0;
+                        let orderedQty = Number(item.qty) || 1;
+                        v.stock[item.size] = Math.max(0, currentStock - orderedQty);
                     }
+                    return v;
+                });
+                await updateDoc(productRef, { variants: updatedVariants });
+            }
+        }
 
-                    const finalTotal = originalTotal - discountValue;
+        alert("تم استلام طلبك بنجاح!");
+        localStorage.removeItem('zorin_cart');
+        location.href = "index.html";
 
-                    await addDoc(collection(db, "orders"), {
-                        customer: { name, phone, address: addr, email: currentUser?.email || "Guest" },
-                        items: orderItems,
-                        originalTotal,
-                        promoUsed,
-                        promoType,
-                        promoValue,
-                        discountValue,
-                        total: finalTotal,
-                        status: "new",
-                        createdAt: new Date()
-                    });
-
-                    // تحديث المخزون
-                    for (const item of orderItems) {
-                        const productRef = doc(db, "products", item.id);
-                        const pSnap = await getDoc(productRef);
-                        if (pSnap.exists()) {
-                            const pData = pSnap.data();
-                            const updatedVariants = pData.variants.map(v => {
-                                if (v.color === item.color && v.stock && item.size in v.stock) {
-                                    let currentStock = Number(v.stock[item.size]) || 0;
-                                    let orderedQty = Number(item.qty) || 1;
-                                    v.stock[item.size] = Math.max(0, currentStock - orderedQty);
-                                }
-                                return v;
-                            });
-                            await updateDoc(productRef, { variants: updatedVariants });
-                        }
-                    }
-
-                    alert("تم استلام طلبك!");
-                    localStorage.removeItem('zorin_cart');
-                    location.href = "index.html";
-                } catch (error) {
-                    console.error(error);
-                    alert("خطأ في الطلب");
-                    btn.innerText = "تأكيد الطلب"; btn.disabled = false;
-                }
-            };
-
+    } catch (error) {
+        console.error("Order Error:", error);
+        alert("حدث خطأ أثناء تأكيد الطلب، حاول مرة أخرى.");
+        btn.innerText = "تأكيد الطلب"; 
+        btn.disabled = false;
+    }
+};
             // --- [4] وظائف الـ UI ---
             window.toggleSidebar = (id) => {
                 document.getElementById(id).classList.add('active');
@@ -1333,16 +1348,27 @@
         </div>
     `).join('');
 
-                const total = cart.reduce((sum, item) => sum + (item.salePrice || item.price) * item.qty, 0);
-                document.getElementById('cartTotal').innerText = "الإجمالي: " + total + " EGP";
+                const itemsTotal = cart.reduce((sum, item) => sum + (item.salePrice || item.price) * item.qty, 0);
+                const shippingFee = itemsTotal > 0 ? 50 : 0; // مصاريف الشحن 50 جنيه
+                const grandTotal = itemsTotal + shippingFee;
 
-                // ⚡ مسح الكوبون القديم عند أي تغيير في العربة
+                document.getElementById('cartTotal').innerHTML = `
+        <div style="font-size:13px; color:#666; font-weight:normal; margin-bottom:4px;">
+            سعر المنتجات: ${itemsTotal} EGP
+        </div>
+        <div style="font-size:13px; color:#666; font-weight:normal; margin-bottom:8px;">
+            مصاريف الشحن: ${shippingFee} EGP (جميع المحافظات)
+        </div>
+        <div style="font-size:16px; font-weight:bold; border-top: 1px dashed #ccc; padding-top: 8px;">
+            الإجمالي النهائي: ${grandTotal} EGP
+        </div>
+    `;
+
                 appliedPromoCode = null;
                 document.getElementById('checkoutPromoInput').value = "";
                 document.getElementById('checkoutPromoMsg').innerText = "";
-                updateCheckoutTotal(); // إعادة حساب الإجمالي بعد مسح الكوبون
+                updateCheckoutTotal();
             };
-
             window.removeItem = (i) => { cart.splice(i, 1); window.updateCart(); };
             window.buyNow = () => {
                 if (!selectedSize) return alert("الرجاء اختيار المقاس");
@@ -1497,50 +1523,44 @@
 
 
             function updateCheckoutTotal() {
-                let total = calculateTotal();
-                let finalTotal = total;
+                let itemsTotal = calculateTotal();
+                const shippingFee = itemsTotal > 0 ? 50 : 0; // مصاريف الشحن الثابتة
+                let discountedItemsTotal = itemsTotal;
                 const msgElem = document.getElementById('checkoutPromoMsg');
 
+                // حساب الخصم على سعر المنتجات فقط
                 if (appliedPromoCode) {
-                    // فيه كوبون صحيح
                     if (appliedPromoCode.discountType === "percentage") {
-                        const discount = total * appliedPromoCode.discountValue / 100;
-                        finalTotal = total - discount;
-                        msgElem.innerText = `تم خصم ${appliedPromoCode.discountValue}% (${discount.toFixed(2)} EGP). المبلغ المطلوب: ${finalTotal.toFixed(2)} EGP`;
+                        const discount = itemsTotal * appliedPromoCode.discountValue / 100;
+                        discountedItemsTotal = itemsTotal - discount;
+                        msgElem.innerText = `تم خصم ${appliedPromoCode.discountValue}% (${discount.toFixed(2)} EGP).`;
                     } else if (appliedPromoCode.discountType === "fixed") {
                         const discount = appliedPromoCode.discountValue;
-                        finalTotal = total - discount;
-                        if (finalTotal < 0) finalTotal = 0;
-                        msgElem.innerText = `تم خصم ${discount.toFixed(2)} EGP. المبلغ المطلوب: ${finalTotal.toFixed(2)} EGP`;
+                        discountedItemsTotal = itemsTotal - discount;
+                        if (discountedItemsTotal < 0) discountedItemsTotal = 0;
+                        msgElem.innerText = `تم خصم ${discount.toFixed(2)} EGP.`;
                     }
                 } else {
-                    // مفيش كوبون صحيح → ما تمسحش الرسالة لو موجودة
                     if (!msgElem.innerText.includes("كود غير صالح")) {
-                        msgElem.innerText = ""; // امسح الرسالة بس لو مش رسالة خطأ
+                        msgElem.innerText = "";
                     }
                 }
 
-                document.getElementById('checkoutTotal').innerText = finalTotal.toFixed(2) + " EGP";
+                // المجموع الكلي النهائي (المنتجات بعد الخصم + الشحن)
+                const finalGrandTotal = discountedItemsTotal + shippingFee;
+
+                document.getElementById('checkoutTotal').innerHTML = `
+        <div style="font-size: 13px; color: #555; font-weight: normal; margin-bottom: 4px;">
+            سعر المنتجات: ${discountedItemsTotal.toFixed(2)} EGP
+        </div>
+        <div style="font-size: 13px; color: #555; font-weight: normal; margin-bottom: 6px;">
+            مصاريف الشحن: ${shippingFee} EGP
+        </div>
+        <div style="font-size: 16px; font-weight: bold; color: #000; border-top: 1px solid #eee; padding-top: 6px;">
+            الإجمالي الكلي: ${finalGrandTotal.toFixed(2)} EGP
+        </div>
+    `;
             }
-
-
-            document.getElementById('checkoutApplyPromo').addEventListener('click', async () => {
-                const codeInput = document.getElementById('checkoutPromoInput').value.trim().toUpperCase();
-                const promoCodes = await loadPromoCodes();
-
-                const msgElem = document.getElementById('checkoutPromoMsg');
-
-                if (promoCodes[codeInput]) {
-                    appliedPromoCode = promoCodes[codeInput];
-                    msgElem.innerText = `تم تطبيق خصم ${appliedPromoCode.discountType === "percentage" ? appliedPromoCode.discountValue + "%" : appliedPromoCode.discountValue + " EGP"}`;
-                } else {
-                    appliedPromoCode = null;
-                    msgElem.innerText = "كود غير صالح"; // 🔹 خليها هنا قبل updateCheckoutTotal
-                }
-
-                updateCheckoutTotal(); // هنا السعر يتحدث بدون مسح الرسالة
-            });
-
 
             function openCheckout(item = null, type = "single") {
                 tempItem = item;          // المنتج الفردي لو Buy Now
