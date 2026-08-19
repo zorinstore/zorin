@@ -363,14 +363,16 @@
         /* ============================================================
            2. ستايل محتوى البرودكت (اللي في النص)
            ============================================================ */
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 15px;
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
+       .container {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 15px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    direction: rtl; /* لضمان الاتجاه الصحيح من اليمين للشمال */
+    text-align: right;
+}
 
         .product-gallery {
             flex: 1;
@@ -406,9 +408,12 @@
         }
 
         .product-info {
-            flex: 1;
-            min-width: 350px;
-        }
+    flex: 1;
+    min-width: 350px;
+    padding-left: 30px; /* دي المسافة اللي هتزق الكلام بعيد عن حرف الشاشة الشمال */
+    padding-right: 15px; /* مسافة أمان من اليمين كمان */
+    box-sizing: border-box; /* لضمان إن المسافات ما تضربش أبعاد الصفحة */
+}
 
         .brand-name {
             font-family: 'Syncopate';
@@ -808,13 +813,13 @@
         </div>
 
         <div class="options">
-            <span class="option-label">اللون</span>
+            <span class="option-label">Color</span>
             <div class="selector-grid" id="colorSelector"></div>
 
-            <span class="option-label">المقاس</span>
+            <span class="option-label">Size</span>
             <div class="selector-grid" id="sizeSelector"></div>
 
-            <span class="option-label">الكمية <small id="stockNotice"
+            <span class="option-label">Quantity <small id="stockNotice"
                     style="color: #888; font-weight: normal;"></small></span>
             <div class="qty-box">
                 <button class="qty-btn" onclick="changeQty(-1)">-</button>
@@ -822,21 +827,19 @@
                 <button class="qty-btn" onclick="changeQty(1)">+</button>
             </div>
         </div>
-        <div class="product-description-container" style="margin: 20px 0;">
-            <h4 style="font-size: 16px; margin-bottom: 8px; font-family: 'Syncopate', sans-serif;">DESCRIPTION</h4>
+    <div class="actions">
+        <button class="btn-black" onclick="addToCart(true)">Add to cart</button>
+        <button class="btn-outline" onclick="buyNow()">Buy it now</button>
+    </div>
+    </div>
+     <div class="product-description-container" style="margin: 20px 0;">
+            <h4 style="font-size: 16px; margin-bottom: 8px; font-family: 'Syncopate', sans-serif; padding-left: 40px;">DESCRIPTION</h4>
             <p id="pDescriptionText" class="pDescriptionText">
             </p>
         </div>
-        <div id="productDescContent" style="white-space: pre-line;">
-            جاري تحميل الوصف...
-        </div>
-    </div>
-    <div class="actions">
-        <button class="btn-black" onclick="addToCart(true)">إضافة إلى العربة</button>
-        <button class="btn-outline" onclick="buyNow()">شراء الآن</button>
-    </div>
-    <div class="description" id="productDesc" style="margin-top:30px; font-size:0.9rem; color:#666;"></div>
-    </div>
+      <div id="productDescContent" style="white-space: pre-line; margin-top: 20px; padding-left: 40px;">
+    جاري تحميل الوصف...
+</div>
     </div>
 
     <div class="cart-drawer" id="cartDrawer">
